@@ -299,7 +299,7 @@ def main(argv):
    # Normalize
    normalized_predictions = [[] for p in predictions]
    for i in range(len(predictions)):
-      normalized_predictions[i] = [int(round((coord/norm_max) * AUTOENCODER_NORM_FACTOR)) for coord in predictions[i]]
+      normalized_predictions[i] = [int(round(((coord-norm_min)/(norm_max-norm_min)) * AUTOENCODER_NORM_FACTOR)) for coord in predictions[i]]
 
    
    # for i in range(len(predictions)):
