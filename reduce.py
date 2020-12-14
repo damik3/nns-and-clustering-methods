@@ -10,7 +10,8 @@ from keras import models, layers, optimizers, losses, metrics
 from Image import Image
 
 AUTOENCODER_LATENT_VECTOR_SIZE = 10
-AUTOENCODER_NORM_FACTOR = 255
+AUTOENCODER_NORM_FACTOR = 65535
+AUTOENCODER_OUT_COORD_SIZE = 2
 
 
 def usage():
@@ -110,7 +111,7 @@ def writeIdx(f, magicnumber, numimages, numrows, numcols, array):
 
    for row in array:
       for coor in row:
-         f.write((coor).to_bytes(1, byteorder="big"))
+         f.write((coor).to_bytes(AUTOENCODER_OUT_COORD_SIZE, byteorder="big"))
    
 
 
@@ -279,7 +280,7 @@ def main(argv):
 
 
    #
-   # Normalize predictions in [0, 255]
+   # Normalize predictions
    #
 
    # predictions = [[0.1, 500.6, 1000.0], [100.8, 250.1, 750.6], [150.0, 500.2, 100.1]]
@@ -326,7 +327,7 @@ def main(argv):
 
    for i in range(n):
       for j in range(onumrows*onumcols):
-         val = f.read(1)
+         val = f.read(AUTOENCODER_OUT_COORD_SIZE)
          val = int.from_bytes(val, "big")
          print(val, end=' ')
       print()
