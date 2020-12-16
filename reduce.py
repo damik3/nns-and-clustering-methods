@@ -15,7 +15,7 @@ AUTOENCODER_OUT_COORD_SIZE = 2
 
 
 def usage():
-   print('autoencoder.py  –d <dataset>  -dupto <optional int>  -q <query file>  -qupto <optional int>  -o <output file>')
+   print('autoencoder.py  –d <dataset>  -dupto <optional int>  -q <query file>  -qupto <optional int>  -od <output_dataset_file> -oq <output_query_file>')
 
 
 
@@ -26,9 +26,10 @@ def getCommandLineArgs(argv):
    readUpto=None
    queryFile=None
    queryUpto=None
-   outputFile=None
+   outputDataFile=None
+   outputQueryFile=None
 
-   if (len(argv) != 6) and (len(argv) !=8) and (len(argv) != 10):
+   if (len(argv) != 6) and (len(argv) !=8) and (len(argv) != 10) and (len(argv) !=12):
       print("Wrong number of parameters!")
       usage()
       sys.exit()
@@ -48,20 +49,23 @@ def getCommandLineArgs(argv):
       elif argv[i] == "-qupto":
          i += 1
          queryUpto = int(argv[i])
-      elif argv[i] == "-o":
+      elif argv[i] == "-od":
          i += 1
-         outputFile = argv[i]
+         outputDataFile = argv[i]
+      elif argv[i] == "-oq":
+         i += 1
+         outputQueryFile = argv[i]
       else:
          print("Invalid parameter ", argv[i])
          sys.exit()
       
       i += 1
 
-   if inputFile is None or queryFile is None or outputFile is None:
+   if inputFile is None or queryFile is None or outputDataFile is None or outputQueryFile is None:
       usage()
       sys.exit()
 
-   return (inputFile, readUpto, queryFile, queryUpto, outputFile)
+   return (inputFile, readUpto, queryFile, queryUpto, outputDataFile, outputQueryFile)
 
 
 
@@ -164,7 +168,7 @@ def decoder(latent_vector, numConvLay, sizeConvFil, numConvFilPerLay, img_numrow
 def main(argv):
 
    # Get command line arguements
-   inputFile, readUpto, queryFile, queryUpto, outputFile = getCommandLineArgs(argv)
+   inputFile, readUpto, queryFile, queryUpto, outputDataFile, outputQueryFile = getCommandLineArgs(argv)
 
    # Get hyperparameters 
    numConvLay, sizeConvFil, numConvFilPerLay, epochs, batchSize = getExecParams()
@@ -276,6 +280,7 @@ def main(argv):
    
    # Predict
    predictions = encoder_model.predict(query_images)
+   tpredictions = encoder_model.predict(train_images)
    
 
 
@@ -301,7 +306,22 @@ def main(argv):
    for i in range(len(predictions)):
       normalized_predictions[i] = [int(round(((coord-norm_min)/(norm_max-norm_min)) * AUTOENCODER_NORM_FACTOR)) for coord in predictions[i]]
 
-   
+
+   norm_max = max([max(p) for p in tpredictions])
+
+
+   if norm_max == 0:
+      norm_max = 1
+
+   norm_min = min([min(p) for p in tpredictions])
+
+
+   print("\n\nmax:", norm_max, "min:", norm_min, end="\n\n")
+
+   tnormalized_predictions = [[] for p in tpredictions]
+   for i in range(len(tpredictions)):
+      tnormalized_predictions[i] = [int(round(((coord-norm_min)/(norm_max-norm_min)) * AUTOENCODER_NORM_FACTOR)) for coord in tpredictions[i]]
+      
    # for i in range(len(predictions)):
       # print("predictions[i]:", predictions[i], "\n normalized_predictions[i]:", normalized_predictions[i], end='\n\n')
 
@@ -311,18 +331,36 @@ def main(argv):
    # Write predictions to output file
    #
 
-   f = open(outputFile, "wb")
+   f = open(outputQueryFile, "wb")
    writeIdx(f, 666, queryUpto, 1, AUTOENCODER_LATENT_VECTOR_SIZE, normalized_predictions)
    f.close()
 
 
-
+   f = open(outputDataFile, "wb")
+   writeIdx(f, 999, readUpto, 1, AUTOENCODER_LATENT_VECTOR_SIZE, tnormalized_predictions)
+   f.close()
    #
    # Check first n vectors
    #
    n = 10
 
-   f = open(outputFile, "rb")
+   print("Printing 10 first vector for Query File...")
+
+   f = open(outputQueryFile, "rb")
+   omagicnumber, onumofimages, onumrows, onumcols = getIdxHeaders(f)
+
+   for i in range(n):
+      for j in range(onumrows*onumcols):
+         val = f.read(AUTOENCODER_OUT_COORD_SIZE)
+         val = int.from_bytes(val, "big")
+         print(val, end=' ')
+      print()
+
+   f.close()
+
+   print("\nPrinting 10 first vectors for Data File...")
+
+   f = open(outputDataFile, "rb")
    omagicnumber, onumofimages, onumrows, onumcols = getIdxHeaders(f)
 
    for i in range(n):
@@ -339,10 +377,15 @@ def main(argv):
    print("Printing 10 first images with their latent vectors and normalized predictions...")
 
    for i in range(10):
-      images[i].print()
+      queries[i].print()
       print(predictions[i])   
       print(normalized_predictions[i])
 
+   
+   for i in range(10):
+      images[i].print()
+      print(tpredictions[i])   
+      print(tnormalized_predictions[i])
 
 
    # Graph loss on train and loss on validation set
