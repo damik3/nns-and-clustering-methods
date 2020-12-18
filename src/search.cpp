@@ -1,7 +1,12 @@
+#include <fcntl.h>
 #include <string.h>
 
 #include <iostream>
 #include <string>
+
+#include "ErrExit.h"
+#include "IDX.hpp"
+#include "Image.hpp"
 
 using namespace std;
 
@@ -47,6 +52,7 @@ int main(int argc, char* argv[]) {
         w,
         output_file);
 
+    /*
     cout << input_original << endl;
     cout << dupto << endl;
     cout << input_new << endl;
@@ -57,6 +63,30 @@ int main(int argc, char* argv[]) {
     cout << L << endl;
     cout << w << endl;
     cout << output_file << endl;
+    */
+
+     
+
+    // Open input file
+    int fdInputFile;
+    if ((fdInputFile = open(input_new.c_str(), O_RDONLY)) == -1)
+        errExit("open");
+
+    // Read input file headers
+    int magicNumber;
+    int numImages;
+    int numRows;
+    int numColumns;
+    getIdxHeaders(fdInputFile, magicNumber, numImages, numRows, numColumns);
+
+    Image img(numRows, numColumns, sizeof(short));
+
+    cout << "Scanning images...\n" << endl;
+    for (int i=0; i<dupto; i++) {
+        img.scan(fdInputFile, i+1);
+        img.print();
+    }
+    cout << dupto << " images scanned" << endl;
 
 }
 

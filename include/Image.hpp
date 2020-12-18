@@ -16,14 +16,18 @@
 #define IMGSIZ IMGROWS * IMGCOLS
 
 // The actual type of a pixel
-#define PIXEL_T unsigned char
+#define PIXEL_T unsigned short
 
 struct Image {
 
     std::vector<PIXEL_T> pixels;
+    int num_rows;
+    int num_cols;
+    int size;
+    int pixel_size;
     int id;
 
-    Image();
+    Image(int num_rows1, int num_cols1, int pixel_size1);
     void scan(int fd, int id = -1);
     void print(std::ostream& os = std::cout) const;
 
