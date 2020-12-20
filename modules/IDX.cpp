@@ -25,3 +25,31 @@ void getIdxHeaders(int fdInputFile, int& magicNumber, int& numImages, int& numRo
     numColumns = be32toh(numColumns);
     // cout << "number of columns = " << numColumns << endl;
 }
+
+
+
+std::vector<Image> getIdxData(const char *filename, int pixel_size, int read_upto) {
+    // Open file
+    int fd;
+    if ((fd = open(filename, O_RDONLY)) == -1)
+        errExit("IDX.open(filename)");
+
+    // Read IDX headers
+    int magicNumber;
+    int numImages;
+    int numRows;
+    int numColumns;
+    getIdxHeaders(fd, magicNumber, numImages, numRows, numColumns);
+
+    Image img(numRows, numColumns, pixel_size);
+    std::vector<Image> ret;
+
+    // Read images
+    for (int i=0; i<read_upto; i++) {
+        img.scan(fd, i+1);
+        ret.push_back(img);
+    }
+
+    close(fd);
+    return ret;
+}
