@@ -3,9 +3,8 @@
 
 
 Image::Image(int num_rows1, int num_cols1, int pixel_size1) 
-    : pixels(num_cols1*num_rows1, 0), num_rows(num_rows1), num_cols(num_cols1), size(num_cols1*num_rows1), pixel_size(pixel_size1) {
-        std::cout << num_rows1 << ", " << num_cols  << ", " << size  << ", " << pixel_size << std::endl;
-    }
+    : pixels(num_cols1*num_rows1, 0), num_rows(num_rows1), num_cols(num_cols1), size(num_cols1*num_rows1), pixel_size(pixel_size1) 
+    {}
 
 
 

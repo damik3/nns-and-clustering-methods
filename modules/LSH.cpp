@@ -98,7 +98,7 @@ Image LSH::nnSearch(Image query) {
         }
     }
 
-    std::cout << "of distance d = " << d << std::endl;;
+    // std::cout << "of distance d = " << d << std::endl;;
 
     return nn;
 }

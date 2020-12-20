@@ -17,6 +17,7 @@ void getIdxHeaders(int fdInputFile,
 
 std::vector<Image> getIdxData(const char *filename, 
     int pixel_size, 
-    int read_upto);
+    int read_upto,
+    int* img_size);
 
 #endif // IDX_HPP

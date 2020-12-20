@@ -28,7 +28,7 @@ void getIdxHeaders(int fdInputFile, int& magicNumber, int& numImages, int& numRo
 
 
 
-std::vector<Image> getIdxData(const char *filename, int pixel_size, int read_upto) {
+std::vector<Image> getIdxData(const char *filename, int pixel_size, int read_upto, int* img_size) {
     // Open file
     int fd;
     if ((fd = open(filename, O_RDONLY)) == -1)
@@ -51,5 +51,7 @@ std::vector<Image> getIdxData(const char *filename, int pixel_size, int read_upt
     }
 
     close(fd);
+
+    *img_size = numRows*numColumns;
     return ret;
 }

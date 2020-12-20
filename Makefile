@@ -9,7 +9,6 @@ CFLAGS= -std=c++0x -I $(IDIR) -Wall -g
 
 DEPS = $(shell find $(IDIR) -name *.h -o -name *.hpp)
 
-#OBJ1 = $(ODIR)/search.o $(ODIR)/Image.o $(ODIR)/ModOp.o  $(ODIR)/HFunc.o $(ODIR)/GFunc.o $(ODIR)/LSH.o $(ODIR)/IDX.o $(ODIR)/Dist.o
 OBJ1 = $(ODIR)/search.o $(ODIR)/Image.o $(ODIR)/ModOp.o $(ODIR)/IDX.o $(ODIR)/Dist.o $(ODIR)/HFunc.o $(ODIR)/GFunc.o $(ODIR)/LSH.o
 
 all: $(BINDIR)/search
