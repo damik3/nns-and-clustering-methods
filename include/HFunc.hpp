@@ -15,13 +15,14 @@ class HFunc {
     unsigned int m;
     unsigned int M;
     unsigned int w;
-    int s[IMGSIZ];
+    int img_size;
+    int* s;
 
 public:
 
     HFunc();
-    HFunc(unsigned int m, unsigned int M, unsigned int w, int seed);
-    void init(unsigned int m, unsigned int M, unsigned int w, int seed);
+    HFunc(unsigned int m, unsigned int M, unsigned int w, int seed, int img_size);
+    void init(unsigned int m, unsigned int M, unsigned int w, int seed, int img_size);
     size_t operator() (const Image& img) const;
 
 };

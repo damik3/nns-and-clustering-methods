@@ -2,7 +2,7 @@
 
 
 
-LSH::LSH(unsigned int w, int k, int L, int numImages) {
+LSH::LSH(unsigned int w, int k, int L, int numImages, int img_size) {
     this->m = pow(2, 13) + 1;
     this->M = pow(2, 32 / k);
     this->w = w;
@@ -13,7 +13,7 @@ LSH::LSH(unsigned int w, int k, int L, int numImages) {
 
     for (int i=0; i<L; i++) {
 
-        hashTable = new std::unordered_set<Image, GFunc>(1, GFunc(m, M, w, k, time(NULL) + i*k));
+        hashTable = new std::unordered_set<Image, GFunc>(1, GFunc(m, M, w, k, time(NULL) + i*k, img_size));
 
         // Set number of images per bucket;
         hashTable->max_load_factor(16.0);
@@ -42,7 +42,7 @@ void LSH::insert(Image img) {
 
 Image LSH::bfSearch(Image query) {
     // Nearest neighbor
-    Image nn;
+    Image nn(query.num_rows, query.num_cols, query.pixel_size);
 
     // Distance of nn
     unsigned int d = pow(2, 32) - 1;
@@ -67,7 +67,7 @@ Image LSH::bfSearch(Image query) {
 
 Image LSH::nnSearch(Image query) {
     // Nearest neighbor
-    Image nn;
+    Image nn(query.num_rows, query.num_cols, query.pixel_size);
 
     // Distance of nn
     unsigned int d = pow(2, 32) - 1;

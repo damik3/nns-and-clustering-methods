@@ -29,7 +29,7 @@ class LSH {
 
 public:
 
-    LSH(unsigned int w, int k, int L, int numImages);
+    LSH(unsigned int w, int k, int L, int numImages, int img_size);
     ~LSH();
 
     void insert(Image img);

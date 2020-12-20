@@ -4,9 +4,12 @@
 
 unsigned int dist(Image img1, Image img2) {
     
+    if (img1.size != img2.size)
+        throw std::runtime_error("Invalid image sizes!");
+
     unsigned int ret = 0;
 
-    for (int i=0; i<IMGSIZ; i++)
+    for (int i=0; i<img1.size; i++)
         ret += abs(img1.pixels[i] - img2.pixels[i]);
 
     return ret;
@@ -14,10 +17,9 @@ unsigned int dist(Image img1, Image img2) {
 
 
 
-Pair::Pair(Image img1, unsigned int d){
-	this->img = img1;
-	this->dist = d;
-}
+Pair::Pair(Image img1, unsigned int d)
+    : img(img1), dist(d) 
+    {}
 
 
 

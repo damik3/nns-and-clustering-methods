@@ -13,12 +13,12 @@ unsigned int concat(std::vector<size_t> hnumbers, int k) {
 
 
 
-GFunc::GFunc(unsigned int m,unsigned int M,unsigned int w,unsigned int k, int seed){
+GFunc::GFunc(unsigned int m,unsigned int M,unsigned int w,unsigned int k, int seed, int img_size){
 	this->k=k;
 	HFunc h;
 
 	for(unsigned int i=0; i<this->k; i++){
-		h.init(m, M, w, seed + i);
+		h.init(m, M, w, seed + i, img_size);
 		hashf.push_back(h);
 	}
     

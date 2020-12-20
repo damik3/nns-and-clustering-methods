@@ -20,7 +20,7 @@ class GFunc {
 	
 public:
 	
-	GFunc(unsigned int m, unsigned int M, unsigned int w, unsigned int k, int seed);
+	GFunc(unsigned int m, unsigned int M, unsigned int w, unsigned int k, int seed, int img_size);
 	size_t operator() (const Image& img) const;
 	
 };
