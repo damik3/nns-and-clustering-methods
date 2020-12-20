@@ -11,9 +11,9 @@
 #include "ErrExit.h"
 
 // Each image is 28x28 = 784 pixels
-#define IMGROWS 28
-#define IMGCOLS 28
-#define IMGSIZ IMGROWS * IMGCOLS
+// #define IMGROWS 28
+// #define IMGCOLS 28
+// #define IMGSIZ IMGROWS * IMGCOLS
 
 // The actual type of a pixel
 #define PIXEL_T unsigned short

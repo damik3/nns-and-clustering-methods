@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include "ErrExit.h"
 #include "IDX.hpp"
@@ -65,28 +66,124 @@ int main(int argc, char* argv[]) {
     cout << output_file << endl;
     */
 
-     
 
-    // Open input file
-    int fdInputFile;
-    if ((fdInputFile = open(input_new.c_str(), O_RDONLY)) == -1)
-        errExit("open");
 
-    // Read input file headers
-    int magicNumber;
-    int numImages;
-    int numRows;
-    int numColumns;
-    getIdxHeaders(fdInputFile, magicNumber, numImages, numRows, numColumns);
+    //  Abbreviations:
+    //  io -> input original (space)
+    //  qo -> query original (space)
+    //  in -> input new (space)
+    //  qn -> query new (space)
 
-    Image img(numRows, numColumns, sizeof(short));
+
+
+    // Open original space input file
+    int fd_io;
+    if ((fd_io = open(input_original.c_str(), O_RDONLY)) == -1)
+        errExit("search.open(input_original)");
+
+    // Read IDX headers
+    int io_magicNumber;
+    int io_numImages;
+    int io_numRows;
+    int io_numColumns;
+    getIdxHeaders(fd_io, io_magicNumber, io_numImages, io_numRows, io_numColumns);
+
+    Image img_o(io_numRows, io_numColumns, sizeof(char));
+    
+    // io_images translates to: input original images
+    vector<Image> io_images;
+
+    cout << "Scanning train images from original space...\n" << endl;
+    for (int i=0; i<dupto; i++) {
+        img_o.scan(fd_io, i+1);
+        io_images.push_back(img_o);
+    }
+    cout << dupto << " images scanned" << endl;
+
+    for (auto it=io_images.begin(); it!=io_images.end(); ++it)
+        it->print();
+
+
+
+    // Open original space query file
+    int fd_qo;
+    if ((fd_qo = open(query_original.c_str(), O_RDONLY)) == -1)
+        errExit("search.open(query_original)");
+
+    // Read IDX headers
+    int qo_magicNumber;
+    int qo_numImages;
+    int qo_numRows;
+    int qo_numColumns;
+    getIdxHeaders(fd_qo, qo_magicNumber, qo_numImages, qo_numRows, qo_numColumns);
+    
+    // qo_images translates to: query original images
+    vector<Image> qo_images;
+
+    cout << "Scanning queriy images from original space...\n" << endl;
+    for (int i=0; i<qupto; i++) {
+        img_o.scan(fd_qo, i+1);
+        qo_images.push_back(img_o);
+    }
+    cout << qupto << " images scanned" << endl;
+
+    for (auto it=qo_images.begin(); it!=qo_images.end(); ++it)
+        it->print();
+
+
+
+
+
+    // Open new space input file
+    int fd_in;
+    if ((fd_in = open(input_new.c_str(), O_RDONLY)) == -1)
+        errExit("search.open(input_new)");
+
+    // Read IDX headers
+    int in_magicNumber;
+    int in_numImages;
+    int in_numRows;
+    int in_numColumns;
+    getIdxHeaders(fd_in, in_magicNumber, in_numImages, in_numRows, in_numColumns);
+
+    Image img_n(in_numRows, in_numColumns, sizeof(short));
+    vector<Image> in_images;
 
     cout << "Scanning images...\n" << endl;
     for (int i=0; i<dupto; i++) {
-        img.scan(fdInputFile, i+1);
-        img.print();
+        img_n.scan(fd_in, i+1);
+        in_images.push_back(img_n);
     }
     cout << dupto << " images scanned" << endl;
+
+    for (auto it=in_images.begin(); it!=in_images.end(); ++it)
+        it->print();
+
+
+
+    // Open new space query file
+    int fd_qn;
+    if ((fd_qn = open(query_new.c_str(), O_RDONLY)) == -1)
+        errExit("search.open(query_new)");
+
+    // Read IDX headers
+    int qn_magicNumber;
+    int qn_numImages;
+    int qn_numRows;
+    int qn_numColumns;
+    getIdxHeaders(fd_qn, qn_magicNumber, qn_numImages, qn_numRows, qn_numColumns);
+
+    vector<Image> qn_images;
+
+    cout << "Scanning images...\n" << endl;
+    for (int i=0; i<qupto; i++) {
+        img_n.scan(fd_qn, i+1);
+        qn_images.push_back(img_n);
+    }
+    cout << qupto << " images scanned" << endl;
+
+    for (auto it=qn_images.begin(); it!=qn_images.end(); ++it)
+        it->print();    
 
 }
 
