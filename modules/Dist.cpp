@@ -1,8 +1,31 @@
 #include "Dist.hpp"
 
+unsigned int ManhattanDistance(Image img1, Image img2);
+double EuclideanDistance(Image img1, Image img2);
+double EmdDistance(Image img1, Image img2);
 
 
-unsigned int dist(Image img1, Image img2) {
+
+double dist(Image img1, Image img2, int method) {
+    
+    if (method == Manhattan)
+        return (double) ManhattanDistance(img1, img2);
+
+    else if (method == Euclidean) 
+        return EuclideanDistance(img1, img2);
+
+    else if (method == Emd)
+        return EmdDistance(img1, img2);
+
+    else
+        throw std::runtime_error("dist: method not defined!");
+    
+}
+
+
+
+
+unsigned int ManhattanDistance(Image img1, Image img2) {
     
     if (img1.size != img2.size)
         throw std::runtime_error("Invalid image sizes!");
@@ -14,6 +37,21 @@ unsigned int dist(Image img1, Image img2) {
 
     return ret;
 }
+
+
+
+
+double EuclideanDistance(Image img1, Image img2) {
+    return 0;
+}
+
+
+
+
+double EmdDistance(Image img1, Image img2) {
+    return 0;
+}
+
 
 
 

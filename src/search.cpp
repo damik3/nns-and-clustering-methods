@@ -14,7 +14,7 @@
 
 using namespace std;
 
-void getCommandLineArgs(int argc, char *argv[],
+void getCommandLineArgs1(int argc, char *argv[],
     string& input_original,
     int& dupto,
     string& input_new,
@@ -27,15 +27,38 @@ void getCommandLineArgs(int argc, char *argv[],
     string& output_file
     );
 
+void getCommandLineArgs2(int argc, char *argv[],
+    string& input,
+    int& dupto,
+    string& queries,
+    int& qupto,
+    string& input_labels,
+    string& queries_labels,
+    string& output_file
+    );
+
 Image bf_search(vector<Image> images, Image query);
 
-
-
+int main1(int argc, char* argv[]);
+int main2(int argc, char* argv[]);
 
 
 
 int main(int argc, char* argv[]) {
-    cout << "Hello search!" << endl;
+    
+    // Check for EMD flag
+    for (int i=1; i<argc; i++)
+        if (strcmp(argv[i], "-EMD") == 0)
+            return main2(argc, argv);
+            
+    // If no EMD flag, call main1
+    return main1(argc, argv);
+}
+
+
+
+
+int main1(int argc, char* argv[]) {
 
     string input_original;
     int dupto = 1000;
@@ -48,7 +71,7 @@ int main(int argc, char* argv[]) {
     int w = 40;
     string output_file;
 
-    getCommandLineArgs(argc, argv,
+    getCommandLineArgs1(argc, argv,
         input_original,
         dupto,
         input_new,
@@ -80,24 +103,17 @@ int main(int argc, char* argv[]) {
     LSH lsh(w, k, L, dupto, o_img_size);
     for (auto it=io_images.begin(); it!=io_images.end(); ++it) {
         lsh.insert(*it);
-        // it->print();
     }
 
     // Read query images from original space
     vector<Image> qo_images = getIdxData(query_original.c_str(), sizeof(char), qupto, &o_img_size);
-    //for (auto it=qo_images.begin(); it!=qo_images.end(); ++it)
-      //  it->print();
     
     // Read train images from new space
     vector<Image> in_images = getIdxData(input_new.c_str(), sizeof(short), dupto, &n_img_size);
-    //for (auto it=in_images.begin(); it!=in_images.end(); ++it)
-      //  it->print();
     
     // Read train images from original space
     vector<Image> qn_images = getIdxData(query_new.c_str(), sizeof(short), qupto, &n_img_size);
-    //for (auto it=qn_images.begin(); it!=qn_images.end(); ++it)
-      //  it->print();
-
+    
     
 
     // Open output file
@@ -175,6 +191,40 @@ int main(int argc, char* argv[]) {
 
 
     ofs.close();
+    return 0;
+}
+
+
+
+
+int main2(int argc, char* argv[]) {
+    
+    string input_fn;
+    int dupto;
+    string queries_fn;
+    int qupto;
+    string input_labels_fn;
+    string queries_labels_fn;
+    string output_fn;
+
+    getCommandLineArgs2(argc, argv,
+        input_fn,
+        dupto,
+        queries_fn,
+        qupto,
+        input_labels_fn,
+        queries_labels_fn,
+        output_fn);
+
+    cout << input_fn << endl;
+    cout << dupto<< endl;
+    cout << queries_fn << endl;
+    cout << qupto<< endl;
+    cout << input_labels_fn << endl;
+    cout << queries_labels_fn<< endl;
+    cout << output_fn<< endl;
+
+    return 0;
 }
 
 
@@ -206,7 +256,7 @@ Image bf_search(vector<Image> images, Image query) {
 
 
 
-void getCommandLineArgs(int argc, char *argv[],
+void getCommandLineArgs1(int argc, char *argv[],
     string& input_original,
     int& dupto,
     string& input_new,
@@ -293,4 +343,74 @@ void getCommandLineArgs(int argc, char *argv[],
 
 
 
+}
+
+
+
+
+void getCommandLineArgs2(int argc, char *argv[],
+    string& input,
+    int& dupto,
+    string& queries,
+    int& qupto,
+    string& input_labels,
+    string& queries_labels,
+    string& output_file
+    ) {
+
+    string usage("./search -EMD –d  <input  file  original  space>  -dupto <optional int>  –q  <query  file  original  space>  -qupto <optional int>  -l1  <labels of input dataset> -l2 <labels of query dataset> -ο <output file>");
+
+    if ((argc != 12) && (argc != 14) && (argc != 16)) {
+        cerr << "Invalid number of parameters!" << endl;
+        cerr << usage << endl;
+        exit(EXIT_FAILURE);
+    }
+
+    char d_opt[] = "-d";
+    char dupto_opt[] = "-dupto";
+    char q_opt[] = "-q";
+    char qupto_opt[] = "-qupto";
+    char l1_opt[] = "-l1";
+    char l2_opt[] = "-l2";
+    char o_opt[] = "-o";
+
+    for (int i=1; i<argc; i++) {
+        if ( (strcmp(d_opt, argv[i]) == 0) ) {
+            i++;
+            input = argv[i];
+        }
+        else if ( (strcmp(dupto_opt, argv[i]) == 0) ) {
+            i++;
+            dupto = atoi(argv[i]);
+        }
+        else if ( (strcmp(q_opt, argv[i]) == 0) ) {
+            i++;
+            queries = argv[i];
+        }
+        else if ( (strcmp(qupto_opt, argv[i]) == 0) ) {
+            i++;
+            qupto = atoi(argv[i]);
+        }
+        else if ( (strcmp(l1_opt, argv[i]) == 0) ) {
+            i++;
+            input_labels = argv[i];
+        }
+        else if ( (strcmp(l2_opt, argv[i]) == 0) ) {
+            i++;
+            queries_labels = argv[i];
+        }
+        else if ( (strcmp(o_opt, argv[i]) == 0) ) {
+            i++;
+            output_file = argv[i];
+        }
+        else if ( (strcmp("-EMD", argv[i]) == 0) ) {
+            continue;
+        }
+        else
+        {
+            cerr << "Invalid parameter " << argv[i] << "!" << endl;
+            cerr << usage << endl;
+            exit(EXIT_FAILURE);
+        }
+    }
 }

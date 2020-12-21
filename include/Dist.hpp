@@ -3,7 +3,13 @@
 
 #include "Image.hpp"
 
-unsigned int dist(Image img1, Image img2);
+enum DistMethod {
+	Manhattan,
+	Euclidean,
+	Emd,
+};
+
+double dist(Image img1, Image img2, int method = Manhattan);
 
 struct Pair {
 	Image img;
