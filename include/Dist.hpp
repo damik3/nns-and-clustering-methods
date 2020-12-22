@@ -3,6 +3,8 @@
 
 #include "Image.hpp"
 
+#include <cmath>
+
 enum DistMethod {
 	Manhattan,
 	Euclidean,

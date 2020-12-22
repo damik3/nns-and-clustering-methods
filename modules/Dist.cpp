@@ -42,7 +42,16 @@ unsigned int ManhattanDistance(Image img1, Image img2) {
 
 
 double EuclideanDistance(Image img1, Image img2) {
-    return 0;
+
+    if (img1.size != img2.size)
+        throw std::runtime_error("Invalid image sizes!");
+
+    double ret = 0.0;
+
+    for (int i=0; i<img1.size; i++)
+        ret += pow(img1.pixels[i] - img2.pixels[i], 2);
+
+    return sqrt(ret);
 }
 
 
