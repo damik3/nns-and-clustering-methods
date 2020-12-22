@@ -54,9 +54,20 @@ void test_all_3(void) {
 
 
 
+void test_all_4(void) {
+    int rows = 1;
+    int cols = 1;
+    Image img1(rows, cols, 1);
+    Image img2(rows+1, cols+1, 1);
+    TEST_EXCEPTION(dist(img1, img2, Manhattan), runtime_error);
+    TEST_EXCEPTION(dist(img1, img2, Euclidean), runtime_error);
+}
+
+
 TEST_LIST = {
     { "test_all_1", test_all_1 },
     { "test_all_2", test_all_2 },
     { "test_all_3", test_all_3 },
+    { "test_all_4", test_all_4 },
     { NULL, NULL }
 };
