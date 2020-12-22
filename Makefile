@@ -3,6 +3,7 @@ IDIR=./include
 MODDIR=./modules
 ODIR=./obj
 SRCDIR=./src
+TESTDIR=./tests
 
 CC=g++
 CFLAGS= -std=c++0x -I $(IDIR) -Wall -g
@@ -13,11 +14,19 @@ OBJ1 = $(ODIR)/search.o $(ODIR)/Image.o $(ODIR)/ModOp.o $(ODIR)/IDX.o $(ODIR)/Di
 
 all: $(BINDIR)/search
 
+tests: $(BINDIR)/Dist_test
+
 $(BINDIR)/search: $(OBJ1)
+	$(CC) -o $@ $^ $(CFLAGS)
+
+$(BINDIR)/Dist_test: $(ODIR)/Dist_test.o $(ODIR)/Dist.o $(ODIR)/Image.o
 	$(CC) -o $@ $^ $(CFLAGS)
 
 $(ODIR)/%.o: $(SRCDIR)/%.cpp $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 $(ODIR)/%.o: $(MODDIR)/%.cpp $(DEPS)
+	$(CC) -c -o $@ $< $(CFLAGS)
+
+$(ODIR)/%.o: $(TESTDIR)/%.cpp $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
