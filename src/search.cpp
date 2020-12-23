@@ -217,12 +217,30 @@ int main2(int argc, char* argv[]) {
         output_fn);
 
     cout << input_fn << endl;
-    cout << dupto<< endl;
+    cout << dupto << endl;
     cout << queries_fn << endl;
-    cout << qupto<< endl;
+    cout << qupto << endl;
     cout << input_labels_fn << endl;
-    cout << queries_labels_fn<< endl;
-    cout << output_fn<< endl;
+    cout << queries_labels_fn << endl;
+    cout << output_fn << endl;
+
+
+
+    int img_size1;
+    int img_size2;
+
+    // Read data from files
+    vector<Image> input_images = getIdxData(input_fn.c_str(), sizeof(char), dupto, &img_size1);
+    vector<Image> query_images = getIdxData(input_fn.c_str(), sizeof(char), dupto, &img_size2);
+
+    if (img_size1 != img_size2) {
+        cerr << "Unequal image sizes for input and query sets!" << endl;
+        exit(EXIT_FAILURE);
+    }
+
+
+
+
 
     return 0;
 }
