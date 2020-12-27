@@ -5,13 +5,15 @@
 
 #include <cmath>
 
+#define DIST_DEFAULT_SIGNATURE_SIZE 4*4
+
 enum DistMethod {
 	Manhattan,
 	Euclidean,
 	Emd,
 };
 
-double dist(Image img1, Image img2, int method = Manhattan);
+double dist(Image img1, Image img2, int method = Manhattan, int emd_n = DIST_DEFAULT_SIGNATURE_SIZE);
 
 struct Pair {
 	Image img;

@@ -1,5 +1,7 @@
 #include "IDX.hpp"
 
+using namespace std;
+
 void getIdxHeaders(int fdInputFile, int& magicNumber, int& numImages, int& numRows, int& numColumns) {
     // Read magic number
     if (read(fdInputFile, &magicNumber, sizeof(int)) < ssize_t(sizeof(int)))
@@ -28,11 +30,33 @@ void getIdxHeaders(int fdInputFile, int& magicNumber, int& numImages, int& numRo
 
 
 
+
+void getIdxLabelHeaders(int fdInputFile,
+    int& magicNumber, 
+    int& numLabels) {
+
+    // Read magic number
+    if (read(fdInputFile, &magicNumber, sizeof(int)) < ssize_t(sizeof(int)))
+        errExit("read");
+    magicNumber = be32toh(magicNumber);
+    cout << "magic number = " << magicNumber << endl;
+
+    // Read number of images
+    if (read(fdInputFile, &numLabels, sizeof(int)) < ssize_t(sizeof(int)))
+        errExit("read");
+    numLabels = be32toh(numLabels);
+    cout << "number of labels = " << numLabels << endl;
+
+}
+
+
+
+
 std::vector<Image> getIdxData(const char *filename, int pixel_size, int read_upto, int* img_size) {
     // Open file
     int fd;
     if ((fd = open(filename, O_RDONLY)) == -1)
-        errExit("IDX.open(filename)");
+        errExit("IDX.getIdxData.open(filename)");
 
     // Read IDX headers
     int magicNumber;
@@ -53,5 +77,31 @@ std::vector<Image> getIdxData(const char *filename, int pixel_size, int read_upt
     close(fd);
 
     *img_size = numRows*numColumns;
+    return ret;
+}
+
+
+
+std::vector<int> getIdxLabelData(const char *filename,  
+    int read_upto) {
+
+    // Open file
+    int fd;
+    if ((fd = open(filename, O_RDONLY)) == -1)
+        errExit("IDX.getIdxLabelData.open(filename)");
+
+    // Read IDX headers
+    int magicNumber;
+    int numLabels;
+    getIdxLabelHeaders(fd, magicNumber, numLabels);
+
+    std::vector<int> ret(numLabels, 0);
+
+    // Read labels
+    for (int i=0; i<read_upto; i++) 
+        if (read(fd, &ret[i], sizeof(char)) < ssize_t(sizeof(char)))
+            errExit("IDX.getIdxLabelData.read:");
+
+    close(fd);
     return ret;
 }

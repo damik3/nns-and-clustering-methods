@@ -231,14 +231,16 @@ int main2(int argc, char* argv[]) {
 
     // Read data from files
     vector<Image> input_images = getIdxData(input_fn.c_str(), sizeof(char), dupto, &img_size1);
-    vector<Image> query_images = getIdxData(input_fn.c_str(), sizeof(char), dupto, &img_size2);
+    vector<Image> query_images = getIdxData(input_fn.c_str(), sizeof(char), qupto, &img_size2);
 
     if (img_size1 != img_size2) {
         cerr << "Unequal image sizes for input and query sets!" << endl;
         exit(EXIT_FAILURE);
     }
 
-
+    // Read labels from files
+    vector<int> input_labels = getIdxLabelData(input_labels_fn.c_str(), dupto);
+    vector<int> query_labels = getIdxLabelData(input_labels_fn.c_str(), qupto);
 
 
 
