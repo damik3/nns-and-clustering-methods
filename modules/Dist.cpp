@@ -14,15 +14,6 @@ double EuclideanDistance(vector<T> v1, vector<T> v2);
 template <class T>
 double EmdDistance(vector<T> v1, vector<T> v2, int num_clusters);
 
-bool is_perfect_square(double n);
-
-template <class T>
-pair<int, int> cluster_pos(vector<T> v, int n, int r);
-
-template <class T>
-double cluster_sum(vector<T> v, pair<int, int> cluster_pos);
-
-
 
 
 double dist(Image img1, Image img2, int method, int emd_n) {
@@ -79,25 +70,29 @@ double EuclideanDistance(vector<T> v1, vector<T> v2) {
 template <class T>
 double EmdDistance(vector<T> v1, vector<T> v2, int num_clusters) {
 
+    // Check validity
+
     if (num_clusters == 0)
-        throw std::overflow_error("Dist:Divide by zero exception");
+        throw std::overflow_error("Dist.EmdDistance: Divide by zero exception");
 
     if (v1.size() != v2.size())
-        throw std::runtime_error("Dist:Invalid image sizes!");
+        throw std::runtime_error("Dist.EmdDistance: Invalid image sizes!");
 
     // Assume vector size is a perfect square
     int v_size = v1.size();
     if (!is_perfect_square(v_size))
-        throw std::runtime_error("Dist: cluster size not a perfect square");
+        throw std::runtime_error("Dist.EmdDistance: cluster size not a perfect square");
 
     // Cluster size must have an integer square root in order for the cluster to be a square
     int cluster_size = v1.size() / num_clusters;
     if (!is_perfect_square(cluster_size))
-        throw std::runtime_error("Dist: cluster size not a perfect square");
+        throw std::runtime_error("Dist.EmdDistance: cluster size not a perfect square");
 
+
+
+    // Size of one dimension of cluster
+    // Both dimensions are the same, since a cluster is a square
     int r = sqrt(cluster_size);
-
-
 
     // Compute the sum of each image, for normalization later
     long double sum1 = accumulate(v1.begin(), v1.end(), 0);
@@ -112,12 +107,15 @@ double EmdDistance(vector<T> v1, vector<T> v2, int num_clusters) {
 
     for (int i=0; i<num_clusters; i++) {
         cluster1[i].first = cluster_pos(v1, i, r);
-        cluster1[i].second = cluster_sum<PIXEL_T>(v1, cluster1[i].first) / sum1;
+        cluster1[i].second = cluster_sum(v1, cluster1[i].first, r) / sum1;
         cluster2[i].first = cluster_pos(v2, i, r);
-        cluster2[i].second = cluster_sum<PIXEL_T>(v2, cluster2[i].first) / sum2;
+        cluster2[i].second = cluster_sum(v2, cluster2[i].first, r) / sum2;
     }
 
-    return 0;
+
+
+    // Return optimal solution of emd modeled as linear programming
+    return lp_solve(cluster1, cluster2);
 }
 
 
@@ -138,30 +136,55 @@ pair<int, int> cluster_pos(vector<T> v, int n, int r) {
 
     // num_rows = num_cols for a 2d square vector
     int num_cols = (int)sqrt(v.size());
-
     int cluster_size = r*r;
-    int clusters_per_row = num_cols / cluster_size;
+    int clusters_per_row = num_cols / r;
+    int num_clusters = v.size() / cluster_size;
 
-    int i = n % clusters_per_row;
-    int j = n / clusters_per_row;
+    if ((n < 0) || (n >= num_clusters))
+        throw runtime_error("Dist. cluster_pos: Invalid cluster number!");
 
-    ret.first = i * r;
-    ret.second = j * r;
+    ret.first = r * (n % clusters_per_row);
+    ret.second = r * (n / clusters_per_row);
 
     return ret;
 }
 
 
 
-// Returns sum of cluster indentified by cluster_pos 
+// Returns sum of cluster indentified by cluster_pos (e.g. cluster_pos = (2, 2))
+// Cluster size is r*r
 template <class T>
-double cluster_sum(vector<T> v, pair<int, int> cluster_pos) {
+double cluster_sum(vector<T> v, pair<int, int> cluster_pos, int r) {
 
     double ret = 0;
+    int count = r*r;
+    int num_cols = (int)sqrt(v.size());
+    int num_rows = num_cols;
 
+    if ((cluster_pos.first < 0) || (cluster_pos.first >= num_cols) || (cluster_pos.second < 0) || (cluster_pos.second >= num_rows))
+        throw runtime_error("Dist. cluster_sum: Invalid cluster position!");
 
+    // v is a 1d vector
+    // but represents 2d array
+    // v starts counting from upper left corner of the 2d array, that is its (0, 0) position
+    // for some reason, we decided that for cluster(i, j) we start counting for bottom left corner
+    // thus the (num_rows - j - 1) coefficient
+    for (int j=cluster_pos.second; 0 < count; j = (j+1) % r + cluster_pos.second) {
+        for (int i=cluster_pos.first; i < cluster_pos.first + r ; i++) {
+            ret += v[ (num_rows - j - 1)*num_cols + i ];
+            count--;
+        }
+    }
 
     return ret;
+}
+
+
+
+
+template <class T>
+double lp_solve(std::vector<T> cluster1, std::vector<T> cluster2) {
+    
 }
 
 
