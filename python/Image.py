@@ -16,13 +16,15 @@ class Image:
         self.pixels = np.zeros([numrows, numcols])
         self.id = id
 
-    def scan(self, file, id = 0):
+    def scan(self, file, id = 0, normalize = True):
         self.id = id
         for i in range(self.numrows):
             for j in range(self.numcols):
                 p = file.read(1)
                 self.pixels[i][j] = int.from_bytes(p, "big")
-                self.pixels[i][j] = self.pixels[i][j] / IMAGE_NORM_FACTOR
+
+                if normalize is True:
+                    self.pixels[i][j] = self.pixels[i][j] / IMAGE_NORM_FACTOR
 
     def print(self):
         print("id: ", self.id)
