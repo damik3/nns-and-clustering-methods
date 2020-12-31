@@ -65,7 +65,7 @@ def cluster_pos(v, n, r):
     if (n < 0) or (n >= num_clusters):
         raise Exception("Dist.cluster_pos: Invalid cluster number!")
     
-    return (r * (n % clusters_per_row), r * (n // clusters_per_row))
+    return (int(r * (n % clusters_per_row)), int(r * (n // clusters_per_row)))
 
 
 
@@ -103,6 +103,48 @@ def cluster_sum(v, cluster_pos, r):
 
 
 
+def set_up_cluster(v, num_clusters):
+
+    # Assume vector size is a perfect square
+    v_size = len(v)
+    if is_perfect_square(v_size) is False:
+        raise Exception("dist.set_up_cluster error: vector size not a perfect square!")
+
+    # Cluster size must have an integer square root in order for the cluster to be a square
+    cluster_size = len(v) / num_clusters
+    if is_perfect_square(cluster_size) == 0:
+        raise Exception("dist.set_up_cluster error : cluster size not a perfect square!")
+
+    # Size of one dimension of cluster
+    # Both dimensions are the same, since a cluster is a square
+    r = int(math.sqrt(cluster_size))
+
+    # Compute the sum of each image, for normalization later
+    v_sum = sum(v)
+
+    # Each cluster is represented by a tuple t. For example
+    # t[0] = (2, 3), its "location"
+    # t[1] = 20, its sum of weights
+    # We want an array of clusters for each image, so we have
+    cluster = []
+
+    for i in range(num_clusters):
+        pos = cluster_pos(v, i, r)
+        s = cluster_sum(v, pos, r) / v_sum
+        cluster.append((pos, s))
+
+    return cluster
+
+
+
+
+def lp_solve(cluster1, cluster2):
+
+    return 0
+
+
+
+
 def emd_dist(v1, v2, num_clusters):
 
     if num_clusters == 0:
@@ -111,18 +153,10 @@ def emd_dist(v1, v2, num_clusters):
     if len(v1) != len(v2):
         raise Exception("dist.emd_dist error : Invalid vector sizes")
 
-    cluster_size = len(v1) / num_clusters
-    if is_perfect_square(cluster_size) == 0:
-        raise Exception("dist.emd_dist error : cluster size not a perfect square")
-
-    r = math.sqrt(cluster_size)
-
-    sum1 = sum(v1)
-    sum2 = sum(v2)
-
-
-
-
+    cluster1 = set_up_cluster(v1, num_clusters)
+    cluster2 = set_up_cluster(v2, num_clusters)
+    return lp_solve(cluster1, cluster2)
+        
 
 
 class Test(unittest.TestCase):
@@ -167,6 +201,10 @@ class Test(unittest.TestCase):
 
 
     def test_cluster_pos(self):
+        self.assertEqual(cluster_pos(self.v_6x6_1, 15, 1), (3, 2))
+        self.assertEqual(cluster_pos(self.v_6x6_1, 0, 1), (0, 0))
+        self.assertEqual(cluster_pos(self.v_6x6_1, 35, 1), (5, 5))
+
         self.assertEqual(cluster_pos(self.v_6x6_1, 3, 2), (0, 2))
         self.assertEqual(cluster_pos(self.v_6x6_1, 0, 2), (0, 0))
         self.assertEqual(cluster_pos(self.v_6x6_1, 8, 2), (4, 4))
@@ -182,10 +220,34 @@ class Test(unittest.TestCase):
 
 
     def test_cluster_sum(self):
+        self.assertEqual(cluster_sum(self.v_6x6_2, (3, 2), 1), 6)
+        self.assertEqual(cluster_sum(self.v_6x6_2, (0, 0), 1), 1)
+        self.assertEqual(cluster_sum(self.v_6x6_2, (5, 5), 1), 1)
+
         self.assertEqual(cluster_sum(self.v_6x6_2, (0, 2), 2), 12)
         self.assertEqual(cluster_sum(self.v_6x6_2, (0, 0), 2), 10)
         self.assertEqual(cluster_sum(self.v_6x6_2, (4, 4), 2), 10)
 
+
+    def test_set_up_cluster(self):
+        cluster = set_up_cluster(self.v_4x4_1, 4)
+        s = sum(self.v_4x4_1)
+        correct = [ ((0, 0), 42/s), ((2, 0), 58/s), ((0, 2), 10/s), ((2, 2), 26/s) ]
+        self.assertEqual(cluster, correct)
+
+        cluster = set_up_cluster(self.v_4x4_1, 1)
+        s = sum(self.v_4x4_1)
+        correct = [ ((0, 0), 1) ]
+        self.assertEqual(cluster, correct)
+
+        cluster = set_up_cluster(self.v_2x2_2, 4)
+        s = sum(self.v_2x2_2)
+        correct = [ ((0, 0), 1/s), ((1, 0), 2/s), ((0, 1), 3/s), ((1, 1), 4/s) ]
+        self.assertEqual(cluster, correct)
+
+        cluster = set_up_cluster(self.v_6x6_2, 9)
+        s = sum(self.v_6x6_2)
+        self.assertEqual(cluster[5], ((4, 2), 20/s))
 
 
 
