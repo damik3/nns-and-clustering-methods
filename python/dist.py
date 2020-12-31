@@ -1,7 +1,7 @@
 import sys
 import math
 import unittest
-
+from ortools.linear_solver import pywraplp
 from Image import Image
 
 
@@ -140,7 +140,50 @@ def set_up_cluster(v, num_clusters):
 
 def lp_solve(cluster1, cluster2):
 
-    return 0
+    assert(len(cluster1) == len(cluster2))
+    
+    num_clusters = len(cluster1)
+
+    solver = solver = pywraplp.Solver('EmdSolver',
+                           pywraplp.Solver.GLOP_LINEAR_PROGRAMMING)
+
+    # define variables in the form of fij
+    # for flow from v1 i-th cluster to v2 j-th cluster
+    f = [[0] * num_clusters] * num_clusters
+    for i in range(num_clusters):
+        for j in range(num_clusters):
+            f[i][j] = solver.NumVar(0, solver.infinity(), 'f'+str(i)+str(j))
+
+    # define objective function
+    objective = solver.Objective()
+    for i in range(num_clusters):
+        for j in range(num_clusters):
+            objective.SetCoefficient(f[i][j], euclidean_dist(cluster1[i][0], cluster2[j][0]))
+    objective.SetMinimization()
+
+    # add consraint that v1 must give as much as it can
+    constraints1 = [0] * num_clusters
+    for i in range(num_clusters):
+        constraints1[i] = solver.Constraint(cluster1[i][1], cluster1[i][1])
+        for j in range(num_clusters):
+            constraints1[i].SetCoefficient(f[i][j], 1)
+
+    # add consraint that v2 must receive as much as it can
+    constraints2 = [0] * num_clusters
+    for j in range(num_clusters):
+        constraints2[j] = solver.Constraint(cluster2[j][1], cluster2[j][1])
+        for i in range(num_clusters):
+            constraints2[j].SetCoefficient(f[i][j], 1)
+
+    # print problem
+    print(solver.ExportModelAsLpFormat(False).replace('\\', '').replace(',_', ','), sep='\n')
+
+    # solve
+    status = solver.Solve()
+    if status == solver.OPTIMAL:
+        return solver.Objective().Value()
+    else:
+        raise Exception("dist.lp_solve error: no optimal solution found!")
 
 
 
@@ -248,6 +291,13 @@ class Test(unittest.TestCase):
         cluster = set_up_cluster(self.v_6x6_2, 9)
         s = sum(self.v_6x6_2)
         self.assertEqual(cluster[5], ((4, 2), 20/s))
+
+    def test_lp_solve(self):
+        v1 = [1, 1, 1, 5]
+        v2 = [3, 1, 2, 2]
+        c1 = set_up_cluster(v1, len(v1))
+        c2 = set_up_cluster(v2, len(v2))
+        print("obj_f =", lp_solve(c1, c2))
 
 
 
