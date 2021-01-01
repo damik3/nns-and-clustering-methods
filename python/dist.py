@@ -1,3 +1,4 @@
+import copy
 import sys
 import math
 import unittest
@@ -138,7 +139,7 @@ def set_up_cluster(v, num_clusters):
 
 
 
-def lp_solve(cluster1, cluster2):
+def lp_solve(cluster1, cluster2, print_pls = False):
 
     assert(len(cluster1) == len(cluster2))
     
@@ -149,7 +150,7 @@ def lp_solve(cluster1, cluster2):
 
     # define variables in the form of fij
     # for flow from v1 i-th cluster to v2 j-th cluster
-    f = [[0] * num_clusters] * num_clusters
+    f = [[0] * num_clusters for i in range(num_clusters)]
     for i in range(num_clusters):
         for j in range(num_clusters):
             f[i][j] = solver.NumVar(0, solver.infinity(), 'f'+str(i)+str(j))
@@ -176,11 +177,24 @@ def lp_solve(cluster1, cluster2):
             constraints2[j].SetCoefficient(f[i][j], 1)
 
     # print problem
-    print(solver.ExportModelAsLpFormat(False).replace('\\', '').replace(',_', ','), sep='\n')
+    if print_pls:
+        print("\ncluster1")
+        print(cluster1)
+        print("\ncluster2")
+        print(cluster2)
+        print(solver.ExportModelAsLpFormat(False).replace('\\', '').replace(',_', ','), sep='\n')
 
     # solve
     status = solver.Solve()
     if status == solver.OPTIMAL:
+        
+        # print flows and objective function
+        if print_pls:    
+            for row in f:
+                for flow in row:
+                    print(flow, "=>", flow.solution_value())
+            print("\nminimal objective function value =", solver.Objective().Value())
+
         return solver.Objective().Value()
     else:
         raise Exception("dist.lp_solve error: no optimal solution found!")
@@ -209,8 +223,12 @@ class Test(unittest.TestCase):
         self.v_1x1_1 = [1]
         self.v_2x2_1 = [1, 2, 3, 4]
         self.v_2x2_2 = [3, 4, 1, 2]
+        self.v_3x3_1 = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        self.v_3x3_2 = [9, 8, 7, 6, 5, 4, 3, 2, 1]
         self.v_4x4_1 = [1, 2, 5, 6, 3, 4, 7, 8, 9, 10, 13, 14, 11, 12, 15, 16]
         self.v_4x4_2 = [11, 12, 15, 16, 9, 10, 13, 14, 3, 4, 7, 8, 1, 2, 5, 6]
+        self.v_4x4_3 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+        self.v_4x4_4 = [16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
         self.v_6x6_1 = [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 1, 3, 4, 5, 6, 1, 2, 4, 5, 6, 1, 2, 3, 5, 6, 1, 2, 3, 4, 6, 1, 2, 3, 4, 5]
         self.v_6x6_2 = [6, 5, 4, 3, 2, 1, 5, 4, 3, 2, 1, 6, 4, 3, 2, 1, 6, 5, 3, 2, 1, 6, 5, 4, 2, 1, 6, 5, 4, 3, 1, 6, 5, 4, 3, 2]
 
@@ -292,12 +310,13 @@ class Test(unittest.TestCase):
         s = sum(self.v_6x6_2)
         self.assertEqual(cluster[5], ((4, 2), 20/s))
 
+
     def test_lp_solve(self):
         v1 = [1, 1, 1, 5]
         v2 = [3, 1, 2, 2]
         c1 = set_up_cluster(v1, len(v1))
         c2 = set_up_cluster(v2, len(v2))
-        print("obj_f =", lp_solve(c1, c2))
+        self.assertAlmostEqual(lp_solve(c1, c2, print_pls=True), 1/8 + 2/8*math.sqrt(2))
 
 
 
