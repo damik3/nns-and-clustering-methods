@@ -1,4 +1,3 @@
-import copy
 import sys
 import math
 import unittest
@@ -7,9 +6,16 @@ from Image import Image
 
 
 
-def is_perfect_square(s):
-    r = math.sqrt(s)
-    return r == math.floor(r)
+
+def dist(v1, v2, method, n):
+    if method == "Manhattan":
+        return manhattan_dist(v1, v2)
+    if method == "Euclidean":
+        return euclidean_dist(v1, v2)
+    elif method == "EMD":
+        return emd_dist(v1, v2, n)
+    else:
+        raise Exception("Dist: Invalid method!")
 
 
 
@@ -43,21 +49,15 @@ def euclidean_dist(v1,v2):
 
 
 
-def dist(v1, v2, method, n):
-    if method == "Manhattan":
-        return manhattan_dist(v1, v2)
-    if method == "Euclidean":
-        return euclidean_dist(v1, v2)
-    elif method == "EMD":
-        return emd_dist(v1, v2, n)
-    else:
-        raise Exception("Dist: Invalid method!")
+def is_perfect_square(s):
+    r = math.sqrt(s)
+    return r == math.floor(r)
 
 
 
 
 def cluster_pos(v, n, r):
-    
+
     num_cols = math.sqrt(len(v))
     cluster_size = r*r
     clusters_per_row = num_cols / r
@@ -66,6 +66,13 @@ def cluster_pos(v, n, r):
     if (n < 0) or (n >= num_clusters):
         raise Exception("Dist.cluster_pos: Invalid cluster number!")
     
+    # v is a 1d vector
+    # but represents 2d array
+    # v starts counting from upper left corner of the 2d array, that is its (0, 0) position
+    # for some reason, we decided that for cluster(i, j) we start counting for bottom left corner
+    # as in a cartesian plane
+
+    # not that complicated if you try it with an exmample on a piece of paper
     return (int(r * (n % clusters_per_row)), int(r * (n // clusters_per_row)))
 
 
@@ -76,7 +83,6 @@ def cluster_sum(v, cluster_pos, r):
     assert(is_perfect_square(len(v)))
 
     ret = 0
-    count = r*r
     num_cols = int(math.sqrt(len(v)))
     num_rows = num_cols
 
@@ -87,16 +93,29 @@ def cluster_sum(v, cluster_pos, r):
     # but represents 2d array
     # v starts counting from upper left corner of the 2d array, that is its (0, 0) position
     # for some reason, we decided that for cluster(i, j) we start counting for bottom left corner
+    # as in a cartesian plane
     # thus the (num_rows - j - 1) coefficient
 
     j = cluster_pos[1]
+    count = r*r
 
     while 0 < count:
+
+        # reset i to most left place of square
         i = cluster_pos[0]
+
+        # keep going as right as the square allows
         while i < cluster_pos[0] + r:
+
+            # not that complicated if you try it with an exmample on a piece of paper
             ret += v[ (num_rows - j - 1) * num_cols + i ]
+            
             count -= 1
+
+            # go right
             i += 1
+
+        # go up
         j = (j+1) % r + cluster_pos[1]
 
     return ret
@@ -176,7 +195,7 @@ def lp_solve(cluster1, cluster2, print_pls = False):
         for i in range(num_clusters):
             constraints2[j].SetCoefficient(f[i][j], 1)
 
-    # print problem
+    # print clusters and problem
     if print_pls:
         print("\ncluster1")
         print(cluster1)
@@ -186,6 +205,7 @@ def lp_solve(cluster1, cluster2, print_pls = False):
 
     # solve
     status = solver.Solve()
+    
     if status == solver.OPTIMAL:
         
         # print flows and objective function
@@ -196,6 +216,7 @@ def lp_solve(cluster1, cluster2, print_pls = False):
             print("\nminimal objective function value =", solver.Objective().Value())
 
         return solver.Objective().Value()
+
     else:
         raise Exception("dist.lp_solve error: no optimal solution found!")
 
@@ -214,6 +235,7 @@ def emd_dist(v1, v2, num_clusters):
     cluster2 = set_up_cluster(v2, num_clusters)
     return lp_solve(cluster1, cluster2)
         
+
 
 
 class Test(unittest.TestCase):
