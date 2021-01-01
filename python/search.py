@@ -6,8 +6,13 @@ import dist as d
 from Image import Image
 
 
+
+
 def usage():
-   print('search.py  –d <dataset>  -dupto <optional int>  -q <query file>  -qupto <optional int>  -o <output_file> -l1 <labels of input dataset> -l2 <labels of query dataset> -EMD')
+   print('Usage: search.py  –d <dataset>  -dupto <optional int>  -q <query file>  -qupto <optional int>  -o <output_file> -l1 <labels of input dataset> -l2 <labels of query dataset> -EMD')
+
+
+
 
 def getCommandLineArgs(argv):
 
@@ -64,9 +69,6 @@ def getCommandLineArgs(argv):
 
 
 
-   
-
-
 
 def getIdxHeaders(f):
    magicnumber = f.read(4)
@@ -83,6 +85,9 @@ def getIdxHeaders(f):
 
    return (magicnumber, numofimages, numrows, numcols)
 
+
+
+
 def getIdxLabelHeaders(f):
 
     magicnumber = f.read(4)
@@ -92,6 +97,8 @@ def getIdxLabelHeaders(f):
     numlabels = int.from_bytes(numlabels, "big")
 
     return (magicnumber, numlabels)
+
+
 
 
 def main(argv):
