@@ -334,11 +334,27 @@ class Test(unittest.TestCase):
 
 
     def test_lp_solve(self):
+        print_pls = False
+
         v1 = [1, 1, 1, 5]
         v2 = [3, 1, 2, 2]
         c1 = set_up_cluster(v1, len(v1))
         c2 = set_up_cluster(v2, len(v2))
-        self.assertAlmostEqual(lp_solve(c1, c2, print_pls=True), 1/8 + 2/8*math.sqrt(2))
+        self.assertAlmostEqual(lp_solve(c1, c2, print_pls=print_pls), 1/8 + 2/8*math.sqrt(2))
+
+        v1 = [1, 1, 1, 1, 2, 1, 1, 1, 1]
+        v2 = [3, 0, 0, 0, 4, 0, 0, 0, 3]
+        c1 = set_up_cluster(v1, len(v1))
+        c2 = set_up_cluster(v2, len(v2))
+        self.assertAlmostEqual(lp_solve(c1, c2, print_pls=print_pls), 0.1*math.sqrt(2) + 0.1*math.sqrt(2) + 0.1*1 + 0.1*1 + 0.1*1 + 0.1*1)
+
+        v1 = [0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 2, 1, 1, 0, 1, 1]
+        v2 = [1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0]
+        c1 = set_up_cluster(v1, 4)
+        c2 = set_up_cluster(v2, 4)
+        self.assertAlmostEqual(lp_solve(c1, c2, print_pls=print_pls), 1/8*2 + 2/8*math.sqrt(8))
+
+        
 
 
 
