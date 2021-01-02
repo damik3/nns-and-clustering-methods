@@ -7,7 +7,7 @@ from Image import Image
 
 
 
-def dist(v1, v2, method, n):
+def dist(v1, v2, method, n=0):
     if method == "Manhattan":
         return manhattan_dist(v1, v2)
     if method == "Euclidean":
