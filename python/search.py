@@ -2,7 +2,9 @@ import sys
 import numpy as np
 import copy
 import dist as d
+from itertools import chain 
 
+from idx import *
 from Image import Image
 
 
@@ -70,127 +72,134 @@ def getCommandLineArgs(argv):
 
 
 
-def getIdxHeaders(f):
-   magicnumber = f.read(4)
-   magicnumber = int.from_bytes(magicnumber, "big")
-
-   numofimages = f.read(4)
-   numofimages = int.from_bytes(numofimages, "big")
-
-   numrows = f.read(4)
-   numrows = int.from_bytes(numrows, "big")
-
-   numcols = f.read(4)
-   numcols = int.from_bytes(numcols, "big")
-
-   return (magicnumber, numofimages, numrows, numcols)
-
-
-
-
-def getIdxLabelHeaders(f):
-
-    magicnumber = f.read(4)
-    magicnumber = int.from_bytes(magicnumber, "big")
-
-    numlabels = f.read(4)
-    numlabels = int.from_bytes(numlabels, "big")
-
-    return (magicnumber, numlabels)
-
-
-
-
 def main(argv):
 
-    # Get command line arguements
-    inputFile, readUpto, queryFile, queryUpto, outputFile, labelDataFile, labelQueryFile = getCommandLineArgs(argv)
-
-    # Read input file
-
-    f = open(inputFile, "rb")
+   # Get command line arguements
+   inputFile, readUpto, queryFile, queryUpto, outputFile, labelDataFile, labelQueryFile = getCommandLineArgs(argv)
 
 
-    #Get IDX Headers
-    magicnumber, numofimages, numrows, numcols = getIdxHeaders(f)
 
-    if (readUpto is None) or (readUpto > numofimages):
+   # Read input file
+   f = open(inputFile, "rb")
+   magicnumber, numofimages, numrows, numcols = getIdxHeaders(f)
+
+   if (readUpto is None) or (readUpto > numofimages):
       readUpto = numofimages
 
-    img = Image(numrows, numcols)
-    images = []
-    train_images = np.zeros([readUpto, numrows, numcols])
+   ret = getIdxData(f, readUpto, numrows, numcols, 1)
 
-    for i in range(readUpto):
-      img.scan(f, i)
-      images.append(copy.deepcopy(img))
-      train_images[i] = copy.deepcopy(img.pixels)
+   images = [Image(numrows, numcols, i+1) for i in range(readUpto)]
+   for i in range(readUpto):
+      images[i].pixels = ret[i]
 
-    f.close()
+   f.close()
 
 
-    #Read query file
 
-    f = open(queryFile, "rb")
+   #Read query file
+   f = open(queryFile, "rb")
+   magicnumber, numofimages, numrows, numcols = getIdxHeaders(f)
 
-
-    magicnumber, numofimages, numrows, numcols = getIdxHeaders(f)
-
-    if (queryUpto is None) or (queryUpto > numofimages):
+   if (queryUpto is None) or (queryUpto > numofimages):
       queryUpto = numofimages
 
-    img = Image(numrows, numcols)
-    queries = []
-    query_images = np.zeros([queryUpto, numrows, numcols])
+   ret = getIdxData(f, queryUpto, numrows, numcols, 1)
 
-    for i in range(queryUpto):
-       img.scan(f, i)
-       queries.append(copy.deepcopy(img))
-       query_images[i] = copy.deepcopy(img.pixels)
+   queries = [Image(numrows, numcols, i+1) for i in range(queryUpto)]
+   for i in range(queryUpto):
+      queries[i].pixels = ret[i]
 
-    f.close()
-
-    #Read dataset label file
-
-    f = open(labelDataFile, "rb")
-
-    magicnumber, numlabels = getIdxLabelHeaders(f)
-
-    
-    # Scan labels from training set
-    
-
-    train_labels = np.zeros(readUpto, dtype=np.uint8)
+   f.close()
 
 
-    for i in range(readUpto):
-        b = f.read(1)
-        train_labels[i] = int(int.from_bytes(b, "big"))
+
+   #Read input label file
+   f = open(labelDataFile, "rb")
+   magicnumber, numlabels = getIdxLabelHeaders(f)
+
+   # Scan labels from training set
+   ret = getIdxLabels(f, readUpto, 1)
+
+   labels = [0 for i in range(readUpto)]
+   for i in range(readUpto):
+      labels[i] = ret[i]
+
+   f.close()
 
 
-    f.close()
 
-    #Read query label file
+   #Read query label file
+   f = open(labelQueryFile, "rb")
+   magicnumber, numlabels = getIdxLabelHeaders(f)
 
-    f = open(labelQueryFile, "rb")
+   # Scan labels from training set
+   ret = getIdxLabels(f, queryUpto, 1)
 
-    magicnumber, numlabels = getIdxLabelHeaders(f)
+   query_labels = [0 for i in range (queryUpto)]
+   for i in range(queryUpto):
+      query_labels[i] = ret[i]
 
-    
-    # Scan labels from query set
-    
+   f.close()
 
-    query_labels = np.zeros(readUpto, dtype=np.uint8)
+   
+
+   # For each image in queries, find the top 10 nearest emd-distance neighbors
+   k = 5
+   n = 4*4
+
+   avg_correct_manhattan = 0
+   avg_correct_emd = 0
+
+   for q in range(len(queries)):
+      q_flat = list(chain.from_iterable(queries[q].pixels))
+      
+      print("\n\n***************************************************************")
+      print("Query")
+      queries[q].print()
+
+      manhattan_distance_to_q = []
+      emd_distance_to_q = []
+
+      for i in images:
+         i_flat = list(chain.from_iterable(i.pixels))
+
+         manhattan_distance_to_q.append(d.dist(q_flat, i_flat, method='Manhattan'))
+         emd_distance_to_q.append(d.dist(q_flat, i_flat, method='EMD', n=n))
+
+      closest_manhattan_neighbors = sorted(range(len(manhattan_distance_to_q)), key=lambda i: manhattan_distance_to_q[i])[:k]
+      closest_emd_neighbors = sorted(range(len(emd_distance_to_q)), key=lambda i: emd_distance_to_q[i])[:k]
+
+      correct_manhattan = 0
+      correct_emd = 0
+
+      print("\n\nManhattan Closest Neibhors:")
+      for i in closest_manhattan_neighbors:
+         if labels[i] == query_labels[q]:
+            correct_manhattan += 1
+            #images[i].print()
+      correct_manhattan /= 10
+      print("correct_manhattan =", correct_manhattan)
+      avg_correct_manhattan += correct_manhattan
+
+      print("\n\nEmd Closest Neibhors:")
+      for i in closest_emd_neighbors:
+         if labels[i] == query_labels[q]:
+            correct_emd += 1
+            #images[i].print()
+      correct_emd /= 10
+      print("correct_emd =", correct_emd)
+      avg_correct_emd += correct_emd
+   
+   avg_correct_manhattan /= queryUpto
+   avg_correct_emd /= queryUpto
 
 
-    for i in range(queryUpto):
-        b = f.read(1)
-        query_labels[i] = int(int.from_bytes(b, "big"))
-    
-    f.close()
 
-    ret = d.dist(images[1],queries[1],"EMD",4)
-    print(ret)
+   f = open(outputFile, "w")
+   f.write("Average Correct Search Results EMD: " + str(avg_correct_emd) + '\n')
+   f.write("Average Correct Search Results Manhattan: " + str(avg_correct_manhattan))
+   f.close()
+
 
 
 if __name__ == "__main__":
