@@ -1,12 +1,11 @@
-import sys
-import numpy as np
-import copy
-import dist as d
 from itertools import chain 
+import copy
+import sys
+import time
 
 from idx import *
 from Image import Image
-
+import dist as d
 
 
 
@@ -143,9 +142,13 @@ def main(argv):
 
    
 
-   # For each image in queries, find the top 10 nearest emd-distance neighbors
-   k = 5
-   n = 4*4
+   # For each image in queries, find the top k nearest emd-distance neighbors
+   k = 10
+   r = 4
+   n = r*r
+
+   avg_time_manhattan = 0
+   avg_time_emd = 0
 
    avg_correct_manhattan = 0
    avg_correct_emd = 0
@@ -154,8 +157,8 @@ def main(argv):
       q_flat = list(chain.from_iterable(queries[q].pixels))
       
       print("\n\n***************************************************************")
-      print("Query")
-      queries[q].print()
+      print("Query", q+1)
+      #queries[q].print()
 
       manhattan_distance_to_q = []
       emd_distance_to_q = []
@@ -163,8 +166,13 @@ def main(argv):
       for i in images:
          i_flat = list(chain.from_iterable(i.pixels))
 
+         t = time.time()
          manhattan_distance_to_q.append(d.dist(q_flat, i_flat, method='Manhattan'))
+         avg_time_manhattan += (time.time() - t)
+
+         t = time.time()
          emd_distance_to_q.append(d.dist(q_flat, i_flat, method='EMD', n=n))
+         avg_time_emd += (time.time() - t)
 
       closest_manhattan_neighbors = sorted(range(len(manhattan_distance_to_q)), key=lambda i: manhattan_distance_to_q[i])[:k]
       closest_emd_neighbors = sorted(range(len(emd_distance_to_q)), key=lambda i: emd_distance_to_q[i])[:k]
@@ -177,7 +185,7 @@ def main(argv):
          if labels[i] == query_labels[q]:
             correct_manhattan += 1
             #images[i].print()
-      correct_manhattan /= 10
+      correct_manhattan /= k
       print("correct_manhattan =", correct_manhattan)
       avg_correct_manhattan += correct_manhattan
 
@@ -186,18 +194,26 @@ def main(argv):
          if labels[i] == query_labels[q]:
             correct_emd += 1
             #images[i].print()
-      correct_emd /= 10
+      correct_emd /= k
       print("correct_emd =", correct_emd)
       avg_correct_emd += correct_emd
    
    avg_correct_manhattan /= queryUpto
    avg_correct_emd /= queryUpto
-
+   avg_time_manhattan /= queryUpto
+   avg_time_emd /= queryUpto
+   print("\n")
+   print("Input images:", readUpto, ", query images:", queryUpto)
+   print("EMD cluster size = ", r, "x", r, sep='')
+   print("Average correct search results EMD: " + str(avg_correct_emd))
+   print("Average time for an EMD search: " + str(avg_time_emd))
+   print("Average correct search results Manhattan: " + str(avg_correct_manhattan))
+   print("Average time for a Manhattan search: " + str(avg_time_manhattan))
 
 
    f = open(outputFile, "w")
    f.write("Average Correct Search Results EMD: " + str(avg_correct_emd) + '\n')
-   f.write("Average Correct Search Results Manhattan: " + str(avg_correct_manhattan))
+   f.write("Average Correct Search Results Manhattan: " + str(avg_correct_manhattan) + '\n')
    f.close()
 
 
