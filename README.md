@@ -33,21 +33,21 @@ For the tests we ran we observed that the EMD metric was better than the Manhatt
  * For 1000 input images and 10 queries
      * Manhattan
        * Average correct search results: 0.7
-       * Average time for a search: 0.156
+       * Average time per query: 0.156
      * EMD with cluster size = 7x7 
        * Average correct search results: 0.82
-       * Average time for a search: 21.960
+       * Average time per query: 21.960
      * EMD with cluster size = 4x4 
        * Average correct search results: 0.59
-       * Average time for a search: 3.153
+       * Average time per query: 3.153
  * For 500 input images and 20 queries
      * Manhattan
        * Average correct search results: 0.675
-       * Average time for a search: 0.082
+       * Average time per query: 0.082
      * EMD with cluster size = 7x7 
        * Average correct search results: 0.78
-       * Average time for a search: 11.107
+       * Average time per query: 11.107
      * EMD with cluster size = 4x4 
        * Average correct search results: 0.58
-       * Average time for a search: 1.370
+       * Average time per query: 1.370
 #### Question D
