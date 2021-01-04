@@ -5,7 +5,10 @@ include_directories(include)
  
 set(search_src src/main/search.cpp src/main/IDX.cpp src/main/Image.cpp src/main/LSH.cpp src/main/Dist.cpp src/main/HFunc.cpp src/main/GFunc.cpp src/main/ModOp.cpp)
  
-set(Dist_test_src src/test/Dist_test.cpp src/main/Dist.cpp src/main/Image.cpp)
+set(cluster_src src/main/cluster.cpp src/main/Cluster.cpp src/main/IDX.cpp src/main/Image.cpp src/main/LSH.cpp src/main/Dist.cpp src/main/HFunc.cpp src/main/GFunc.cpp src/main/ModOp.cpp src/main/FFunc.cpp src/main/Hypercube.cpp)
+
+set(Dist_test_src src/test/Dist_test.cpp src/main/Dist.cpp src/main/Image.cpp )
  
 add_executable(search ${search_src})
+add_executable(cluster ${cluster_src})
 add_executable(Dist_test ${Dist_test_src})

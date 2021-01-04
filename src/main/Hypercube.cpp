@@ -76,7 +76,7 @@ int Hypercube::hash(Image img) {
 
 
 
-Hypercube::Hypercube(int d1, int w) {
+Hypercube::Hypercube(int d1, int w, int img_size) {
     this->d1 = d1;
 
     FFunc ffunc;
@@ -86,7 +86,7 @@ Hypercube::Hypercube(int d1, int w) {
     int seed = time(NULL);
 
     for (int i=0; i<d1; i++) {
-        ffunc.init(m, M, w, seed + i);
+        ffunc.init(m, M, w, seed + i, img_size);
         this->f.push_back(ffunc);
     }
 
@@ -102,7 +102,7 @@ void Hypercube::insert(Image img) {
 
 Image Hypercube::bfSearch(Image query) {
     // Nearest neighbor
-    Image nn;
+    Image nn(query.num_rows, query.num_cols, query.size);
 
     // Distance of nn
     unsigned int d = pow(2, 32) - 1;
@@ -210,7 +210,7 @@ std::vector<Pair> Hypercube::bfknnSearch(Image query){
 
 Image Hypercube::nnSearch(Image query, int probes, int M) {
     // Nearest neighbor
-    Image nn;
+    Image nn(query.num_rows, query.num_cols, query.size);
 
     // Distance of nn
     unsigned int d = pow(2, 32) - 1;

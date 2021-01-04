@@ -18,8 +18,8 @@ class FFunc {
 
 public:
     FFunc();
-    FFunc(unsigned int m, unsigned int M, unsigned int w, int seed); 
-    void init(unsigned int m, unsigned int M, unsigned int w, int seed);
+    FFunc(unsigned int m, unsigned int M, unsigned int w, int seed, int img_size); 
+    void init(unsigned int m, unsigned int M, unsigned int w, int seed, int img_size);
     int operator() (const Image& img) const;
 
 };

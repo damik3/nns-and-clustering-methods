@@ -76,12 +76,14 @@ int newCentroidPos(std::vector<Image> input, std::vector<Image> centroid, int t)
 
 Image median(std::vector<Image> images) {
 
-    Image ret;
-
     if (images.empty())
-        return ret;
+        return Image(0, 0, 0);
 
-    for (int j=0; j<IMGSIZ; j++) {
+    Image ret(images[0].num_rows, images[0].num_cols, images[0].pixel_size);
+
+    int img_size = images[0].size;
+
+    for (int j=0; j<img_size; j++) {
 
         std::vector<PIXEL_T> temp;
 
@@ -115,10 +117,10 @@ Cluster::Cluster(int k1, std::string m1,
         int max_number_M_hypercube,
         int number_of_hypercube_dimensions,
         int number_of_probes) 
-    : k(k1), m(m1), centroid(k), cluster(k) {
+    : k(k1), m(m1), centroid(k, Image(input[0].num_rows, input[0].num_cols, input[0].size)), cluster(k) {
 
     srand(time(NULL));
-
+    int img_size = input[0].size;
 
 
     //
@@ -142,7 +144,7 @@ Cluster::Cluster(int k1, std::string m1,
     input[pos].id = pos + 1;
 
     // Change duplicate image at one bit at random
-    input[pos].pixels[rand() % IMGSIZ] = rand() % (int)pow(2, 8*sizeof(PIXEL_T));
+    input[pos].pixels[rand() % img_size] = rand() % (int)pow(2, 8*sizeof(PIXEL_T));
 
     t++;
 
@@ -165,7 +167,7 @@ Cluster::Cluster(int k1, std::string m1,
         input[pos].id = pos + 1;
 
         // Change duplicate image at one bit at random
-        input[pos].pixels[rand() % IMGSIZ] = rand() % (int)pow(2, 8*sizeof(PIXEL_T));
+        input[pos].pixels[rand() % img_size] = rand() % (int)pow(2, 8*sizeof(PIXEL_T));
 
         t++;
     }
@@ -200,14 +202,14 @@ Cluster::Cluster(int k1, std::string m1,
 
 
     // Insert all images into LSH hash tables
-    LSH lsh(DEFAULT_w, number_of_vector_hash_functions, number_of_vector_hash_tables, input.size());
+    LSH lsh(DEFAULT_w, number_of_vector_hash_functions, number_of_vector_hash_tables, input.size(), img_size);
 
     if (m == METHOD_LSH)
         for (auto it = input.begin(); it != input.end(); ++it)
             lsh.insert(*it);
 
     // Same for hypercube
-    Hypercube cube(number_of_hypercube_dimensions, HYPERCUBE_w);
+    Hypercube cube(number_of_hypercube_dimensions, HYPERCUBE_w, img_size);
 
     if (m == METHOD_HYPERCUBE)
         for (auto it = input.begin(); it != input.end(); ++it)
@@ -305,7 +307,7 @@ Cluster::Cluster(int k1, std::string m1,
 
                 // Remove duplicates from cluster[i]
 
-                std::unordered_set<Image, HFunc> tempSet(1, HFunc(DEFAULT_m, DEFAULT_M, DEFAULT_w, time(NULL)));
+                std::unordered_set<Image, HFunc> tempSet(1, HFunc(DEFAULT_m, DEFAULT_M, DEFAULT_w, time(NULL), img_size));
 
                 for (auto it = cluster[i].begin(); it != cluster[i].end(); ++it)
                     tempSet.insert(*it);

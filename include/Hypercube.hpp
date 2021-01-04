@@ -37,7 +37,7 @@ public:
 
     int hash(Image img);
 
-    Hypercube(int d1, int w = 40);
+    Hypercube(int d1, int w, int img_size);
     void insert(Image img);
 
     Image bfSearch(Image query);
