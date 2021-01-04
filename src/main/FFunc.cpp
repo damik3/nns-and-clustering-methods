@@ -7,14 +7,14 @@ FFunc::FFunc()
 
 
 
-FFunc::FFunc(unsigned int m, unsigned int M, unsigned int w, int seed) {
-    this->init(m, M, w, seed);
+FFunc::FFunc(unsigned int m, unsigned int M, unsigned int w, int seed, int img_size) {
+    this->init(m, M, w, seed, img_size);
 }
 
 
 
-void FFunc::init(unsigned int m, unsigned int M, unsigned int w, int seed) {
-    h.init(m, M, w, seed);
+void FFunc::init(unsigned int m, unsigned int M, unsigned int w, int seed, int img_size) {
+    h.init(m, M, w, seed, img_size);
     srand(seed);
     this->r = rand();
 
