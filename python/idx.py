@@ -59,7 +59,32 @@ def getIdxLabels(f, num_labels, label_size):
         ret[i] = f.read(label_size)
         ret[i] = int.from_bytes(ret[i], "big")
 
-    return ret
+    return 
+    
+
+
+
+def print_upto(filename, upto):
+    with open(filename, "rb") as f:
+        magicnumber, numofimages, numrows, numcols = getIdxHeaders(f)
+        if upto > numofimages:
+            upto = numofimages
+        img = Image(numrows, numcols)
+        for i in range(upto):
+            img.scan(f, id=i+1, normalize=False)
+            img.print()
+
+
+
+def print_img(filename, img_num):
+    with open(filename, "rb") as f:
+        magicnumber, numofimages, numrows, numcols = getIdxHeaders(f)
+        img = Image(numrows, numcols)
+        for i in range(numofimages):
+            img.scan(f, id=i+1, normalize=False)
+            if i == img_num-1:
+                img.print() 
+                return
 
 
 
