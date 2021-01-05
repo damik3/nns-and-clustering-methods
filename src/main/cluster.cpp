@@ -141,6 +141,80 @@ int main(int argc, char* argv[]) {
     for (int i=0; i<(int)silhouette2.size(); i++) 
         cout << "silhouette2[" << i << "] = " << silhouette2[i] << endl;
 
+
+
+
+    //
+    // Print to ouput file
+    //
+
+    // Open output file
+    ofstream outputFileStream(output_file.c_str());
+    if (!outputFileStream.is_open()) 
+        errExit("outputFileStream:");
+
+    // For new space
+    outputFileStream << "NEW SPACE" << endl;
+
+    for (int i=0; i<number_of_clusters; i++) {
+
+        outputFileStream << "CLUSTER-" << i+1 << ": {" << cluster2.getClusterSize(i) << ", [";
+
+        Image centroid = cluster2.getCentroid(i);
+
+        for (int p=0; p<centroid.size; p++) {
+
+            outputFileStream << (int)centroid.pixels[p];
+            
+            if (p < centroid.size - 1)
+                outputFileStream << ", ";
+        }
+
+        outputFileStream << "]}" << endl;
+    }
+
+    outputFileStream << "clustering_time: " << cluster_time_2.count() << " ms" << endl;
+
+    outputFileStream << "Silhouette: [";
+
+    for (int i=0; i<number_of_clusters; i++) 
+        outputFileStream << silhouette2[i] << ", ";
+
+    outputFileStream << silhouette2[number_of_clusters] << "]" << endl;
+
+    
+
+
+    // For original space
+    outputFileStream << "\nORIGINAL SPACE" << endl;
+
+    for (int i=0; i<number_of_clusters; i++) {
+
+        outputFileStream << "CLUSTER-" << i+1 << ": {" << cluster1.getClusterSize(i) << ", [";
+
+        Image centroid = cluster1.getCentroid(i);
+
+        for (int p=0; p<centroid.size; p++) {
+
+            outputFileStream << (int)centroid.pixels[p];
+            
+            if (p < centroid.size - 1)
+                outputFileStream << ", ";
+        }
+
+        outputFileStream << "]}" << endl;
+    }
+
+    outputFileStream << "clustering_time: " << cluster_time_1.count() << " ms" << endl;
+
+    outputFileStream << "Silhouette: [";
+
+    for (int i=0; i<number_of_clusters; i++) 
+        outputFileStream << silhouette1[i] << ", ";
+
+    outputFileStream << silhouette1[number_of_clusters] << "]" << endl;
+
+
 } 
 
 
