@@ -76,6 +76,7 @@ def print_upto(filename, upto):
 
 
 
+
 def print_img(filename, img_num):
     with open(filename, "rb") as f:
         magicnumber, numofimages, numrows, numcols = getIdxHeaders(f)

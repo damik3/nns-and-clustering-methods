@@ -214,7 +214,9 @@ int main(int argc, char* argv[]) {
 
     outputFileStream << silhouette1[number_of_clusters] << "]" << endl;
 
-
+    // Close files
+    outputFileStream.close();
+    confFileStream.close();
 } 
 
 
