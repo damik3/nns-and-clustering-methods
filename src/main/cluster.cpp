@@ -52,6 +52,95 @@ int main(int argc, char* argv[]) {
     cout << conf_file << endl;
     cout << output_file << endl;
 
+
+
+    //
+    // Read configuration file
+    //
+
+    ifstream confFileStream(conf_file.c_str());
+
+    if (!confFileStream.is_open()) 
+        errExit("confFileStream"); 
+
+    string s;
+    int number_of_clusters;
+    int number_of_vector_hash_tables;
+    int number_of_vector_hash_functions;
+    int max_number_M_hypercube;
+    int number_of_hypercube_dimensions;
+    int number_of_probes;
+
+    confFileStream >> s >> number_of_clusters;
+    confFileStream >> s >> number_of_vector_hash_tables;
+    confFileStream >> s >> number_of_vector_hash_functions;
+    confFileStream >> s >> max_number_M_hypercube;
+    confFileStream >> s >> number_of_hypercube_dimensions;
+    confFileStream >> s >> number_of_probes;
+
+
+
+    // ******************
+    // * Abbreviations: *
+    // ******************
+    //  o -> original (space)
+    //  n -> new (space)
+    //  io -> input original (space)
+    //  in -> input new (space)
+
+    int o_img_size;
+    int n_img_size;
+
+    // Read train images from original space and insert into LSH tables
+    vector<Image> io_images = getIdxData(input_original.c_str(), sizeof(char), dupto, &o_img_size);
+
+    // Read train images from new space
+    vector<Image> in_images = getIdxData(input_new.c_str(), sizeof(short), dupto, &n_img_size);
+    
+
+
+    // Create clusters for original space images and time
+    auto t1 = std::chrono::high_resolution_clock::now();
+
+    Cluster cluster1(number_of_clusters, 
+        METHOD_CLASSIC, 
+        io_images,
+        number_of_vector_hash_tables,
+        number_of_vector_hash_functions,
+        max_number_M_hypercube,
+        number_of_hypercube_dimensions,
+        number_of_probes);
+
+    auto t2 = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> cluster_time_1 = t2 - t1;
+
+    // Compute silhouette
+    std::vector<double> silhouette1 = cluster1.silhouette();
+    for (int i=0; i<(int)silhouette1.size(); i++) 
+        cout << "silhouette1[" << i << "] = " << silhouette1[i] << endl;
+
+
+
+    // Create clusters for new space images and time
+    t1 = std::chrono::high_resolution_clock::now();
+
+    Cluster cluster2(number_of_clusters, 
+        METHOD_CLASSIC, 
+        in_images,
+        number_of_vector_hash_tables,
+        number_of_vector_hash_functions,
+        max_number_M_hypercube,
+        number_of_hypercube_dimensions,
+        number_of_probes);
+
+    t2 = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> cluster_time_2 = t2 - t1;
+
+    // Compute silhouette
+    std::vector<double> silhouette2 = cluster2.silhouette();
+    for (int i=0; i<(int)silhouette2.size(); i++) 
+        cout << "silhouette2[" << i << "] = " << silhouette2[i] << endl;
+
 } 
 
 
