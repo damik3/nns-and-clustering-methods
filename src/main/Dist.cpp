@@ -184,7 +184,7 @@ double cluster_sum(vector<T> v, pair<int, int> cluster_pos, int r) {
 
 template <class T>
 double lp_solve(std::vector<T> cluster1, std::vector<T> cluster2) {
-    
+    return (double) 0;
 }
 
 
