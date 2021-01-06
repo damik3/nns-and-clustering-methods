@@ -35,7 +35,7 @@ Image median(std::vector<Image> images);
 
 */
 
-class Cluster {
+struct Cluster {
 
     int k;
     std::string m;
@@ -43,7 +43,7 @@ class Cluster {
     std::vector<Image> centroid;                // size k
     std::vector<std::vector<Image> > cluster;   // size k
 
-public:
+    Cluster();
 
     Cluster(int k, std::string m, 
         std::vector<Image> input,
@@ -60,6 +60,12 @@ public:
     std::vector<Image> getCluster(int c);
 
     std::vector<double> silhouette(); 
+
+    double objective_f();
+
+    void display();
+
+    void replace(std::vector<Image> new_image);
 
 };
 

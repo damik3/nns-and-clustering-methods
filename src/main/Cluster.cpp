@@ -1,5 +1,8 @@
 #include "Cluster.hpp"
 
+using namespace std;
+
+
 
 
 int binSea(std::vector<unsigned int> A, int x, unsigned int pos1, unsigned int pos2) {
@@ -27,6 +30,7 @@ int binSea(std::vector<unsigned int> A, int x, unsigned int pos1, unsigned int p
 
     return (x < A[newp]) ? binSea(A, x, pos1, newp) : binSea(A, x, newp, pos2);
 }
+
 
 
 
@@ -74,6 +78,7 @@ int newCentroidPos(std::vector<Image> input, std::vector<Image> centroid, int t)
 
 
 
+
 Image median(std::vector<Image> images) {
 
     if (images.empty())
@@ -104,9 +109,17 @@ Image median(std::vector<Image> images) {
 
 
 
+
 int limitUnassigned(int inputSize) {
     return inputSize / 2;
 }
+
+
+
+
+Cluster::Cluster() : k(-1) 
+    {}
+
 
 
 
@@ -461,9 +474,11 @@ Cluster::Cluster(int k1, std::string m1,
 
 
 
+
 Image Cluster::getCentroid(int c) {
     return centroid[c];
 }
+
 
 
 
@@ -473,9 +488,11 @@ size_t Cluster::getClusterSize(int c) {
 
 
 
+
 std::vector<Image> Cluster::getCluster(int c) {
     return cluster[c];    
 }
+
 
 
 
@@ -578,5 +595,58 @@ std::vector<double> Cluster::silhouette() {
     ret.push_back(sumAll/ (double) countAll);
 
     return ret;
+
+}
+
+
+
+
+double Cluster::objective_f() {
+
+    double ret = 0;
+
+    for (int k1=0; k1<k; k1++)
+        for (int i=0; i<(int) cluster[k1].size(); i++)  
+            ret += dist(cluster[k1][i], centroid[k1]);
+
+    return ret;
+}
+
+
+
+
+void Cluster::display() {
+
+    for (int k1=0; k1<k; k1++) {
+
+        cout << "\n\n********************************************" << endl;
+        cout << "********************************************" << endl;
+        cout << "centroid[" << k1 << "]" << endl;
+        centroid[k1].print();
+        cout << "********************************************" << endl;
+        cout << "Contains..." << endl;
+
+        for (int i=0; i<(int) cluster[k1].size(); i++)  {
+            cluster[k1][i].print();
+        }
+    }
+
+}
+
+
+
+
+void Cluster::replace(std::vector<Image> new_image) {
+
+    // For each image in each cluster,
+    // replace it with corresponding image from new_image.
+    for (int k1=0; k1<k; k1++) 
+        for (int i=0; i<(int) cluster[k1].size(); i++) 
+            cluster[k1][i] = new_image[cluster[k1][i].id - 1];    
+        
+    // Recompute centroids
+    for (int j=0; j<k; j++) 
+        if (cluster[j].size()) 
+            centroid[j] = median(cluster[j]);
 
 }

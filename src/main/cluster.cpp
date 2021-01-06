@@ -118,6 +118,9 @@ int main(int argc, char* argv[]) {
     std::vector<double> silhouette1 = cluster1.silhouette();
     for (int i=0; i<(int)silhouette1.size(); i++) 
         cout << "silhouette1[" << i << "] = " << silhouette1[i] << endl;
+    
+    // Compute objective function
+    double obj_f1 = cluster1.objective_f();
 
 
 
@@ -136,11 +139,17 @@ int main(int argc, char* argv[]) {
     t2 = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::milli> cluster_time_2 = t2 - t1;
 
+    // Compute the following values in original space (io: input original)
+    Cluster cluster2_io = cluster2;
+    cluster2_io.replace(io_images);
+
     // Compute silhouette
-    std::vector<double> silhouette2 = cluster2.silhouette();
+    std::vector<double> silhouette2 = cluster2_io.silhouette();
     for (int i=0; i<(int)silhouette2.size(); i++) 
         cout << "silhouette2[" << i << "] = " << silhouette2[i] << endl;
 
+    // Compute objective function
+    double obj_f2 = cluster2_io.objective_f();
 
 
 
@@ -182,7 +191,7 @@ int main(int argc, char* argv[]) {
 
     outputFileStream << silhouette2[number_of_clusters] << "]" << endl;
 
-    
+    outputFileStream << "Value of Objective Function: " << obj_f2 << endl;
 
 
     // For original space
@@ -213,6 +222,8 @@ int main(int argc, char* argv[]) {
         outputFileStream << silhouette1[i] << ", ";
 
     outputFileStream << silhouette1[number_of_clusters] << "]" << endl;
+
+    outputFileStream << "Value of Objective Function: " << obj_f1 << endl;
 
     // Close files
     outputFileStream.close();
