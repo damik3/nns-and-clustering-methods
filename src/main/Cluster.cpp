@@ -650,3 +650,45 @@ void Cluster::replace(std::vector<Image> new_image) {
             centroid[j] = median(cluster[j]);
 
 }
+
+
+
+
+std::vector<std::vector<int> > parse_clustering(string& filename) {
+
+    std::vector<std::vector<int> > ret;
+
+    ifstream ifs(filename);
+
+    if (ifs.is_open() == false) 
+        errExit("Cluster.parse_clustering: Can't open file!");
+
+    string s;
+    char c;
+    int size = 0;
+    int val;
+
+    while (ifs >> s) {  // read "CLUSTER-k"
+        std::vector<int> v;
+
+        ifs >> s;       // read "{"
+        ifs >> s;       // read "size:"
+        
+        ifs >> s;
+        // Convert for example "3," to "3" and then to 3
+        size = stoi(s.substr(0, s.size()-1));
+        
+        for (int i=0; i<size; i++) {
+            ifs >> s;
+            val = stoi(s.substr(0, s.size()-1));
+
+            v.push_back(val);
+        }
+        
+        ifs >> s;       // read "}"
+    
+        ret.push_back(v);
+    }
+
+    return ret;
+}

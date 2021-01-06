@@ -61,7 +61,7 @@ void test_objective_f(void) {
     cluster.cluster.push_back(cluster1);
     cluster.cluster.push_back(cluster2);
 
-    cluster.display();
+    // cluster.display();
 
     TEST_CHECK( cluster.objective_f() == (double)11 );
 
@@ -124,7 +124,7 @@ void test_replace(void) {
     cluster.cluster.push_back(cluster1);
     cluster.cluster.push_back(cluster2);
 
-    cluster.display();
+    // cluster.display();
 
     TEST_CHECK( cluster.objective_f() == (double)90 );
 
@@ -159,7 +159,7 @@ void test_replace(void) {
     Cluster cluster_new = cluster;
     cluster_new.replace(new_image);
 
-    cluster_new.display();
+    // cluster_new.display();
 
     TEST_CHECK( cluster_new.objective_f() == (double)9 );
 
@@ -167,8 +167,38 @@ void test_replace(void) {
 
 
 
+void test_parse_clustering(void) {
+
+    string s("../src/test/input/parse_cluster_input_1.txt");
+    auto ret = parse_clustering(s);
+
+    vector<int> v1{1, 2, 3};
+    vector<int> v2{4, 5};
+    vector<int> v3{6};
+
+    vector<vector<int> > correct;
+    correct.push_back(v1);
+    correct.push_back(v2);
+    correct.push_back(v3);
+/*
+    // Display
+    for (auto cluster = ret.begin(); cluster != ret.end(); ++cluster) {
+        for (auto element = cluster->begin(); element != cluster->end(); ++element) {
+            cout << *element << ", ";
+        }
+        cout << endl;
+    }
+*/
+    for (int i=0; i<3; i++)
+        TEST_CHECK(ret[i] == correct[i]);
+
+}
+
+
+
 TEST_LIST = {
-    {"test_objective_f", test_objective_f},
-    {"test_replace", test_replace},
+    {"objective_f", test_objective_f},
+    {"replace", test_replace},
+    {"parse_clustering", test_parse_clustering},
     {NULL, NULL}
 };

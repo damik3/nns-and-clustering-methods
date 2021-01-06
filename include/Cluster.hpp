@@ -6,6 +6,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <fstream>
 #include <string>
 #include <unordered_set>
 #include <vector>
@@ -34,6 +35,8 @@ int newCentroidPos(std::vector<Image> input, std::vector<Image> centroid, int t)
 Image median(std::vector<Image> images);
 
 */
+
+std::vector<std::vector<int> > parse_clustering(string& filename);
 
 struct Cluster {
 
