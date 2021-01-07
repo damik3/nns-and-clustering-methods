@@ -133,7 +133,7 @@ For the tests we ran we observed that the EMD metric was better than the Manhatt
 #### Question D
 We experimented with `n = number of clusters`, ranging from 10 to 18, and we noticed best behaviour for Original Space Clustering (OSC) and New Space Clustering (NSC) for `n = 14`. Both OSC and NSC had a similar Silhouette but the NSC run about 10 times faster. The only reason NSC is faster is the big change in dimensions. OSC has 784-item vectors when NSC has 10-item vectors. 
 
-For the Neaural Network Clustering (NNC), while the Silhouette metric was almost never better than OSC and NSC, when we evaluated the clustering by viewing the images in each cluster ourselves, the NNC was obviously better than both the other two. This led us to the thought that the Silhouette function compared with the Manhattan metric is not a very effective evaluation function for image classification.
+For the Neaural Network Clustering (NNC), while the Silhouette metric was almost never better than OSC and NSC, when we evaluated the clustering by viewing the images in each cluster ourselves, the NNC was obviously better than both the other two. This led us to the thought that the Silhouette function combined with the Manhattan metric is not a very effective evaluation function for image classification.
 
 Also note, that our `cluster` executable, after it completes the clustering and writing to the output file, it also prints for each clustering (OSC, NSC and NNC), the 4 first centroids with their first 10 images accordingly. That is so you can see for yourselves how good each method classifies the images.
 
