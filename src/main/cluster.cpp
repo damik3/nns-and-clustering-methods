@@ -44,14 +44,14 @@ int main(int argc, char* argv[]) {
     nn_cluster_fn,
     conf_file,
     output_file);
-
+/*
     cout << input_original << endl;
     cout << dupto << endl;
     cout << input_new << endl;
     cout << nn_cluster_fn << endl;
     cout << conf_file << endl;
     cout << output_file << endl;
-
+*/
 
 
     //
@@ -116,8 +116,6 @@ int main(int argc, char* argv[]) {
 
     // Compute silhouette
     std::vector<double> silhouette1 = cluster1.silhouette();
-    for (int i=0; i<(int)silhouette1.size(); i++) 
-        cout << "silhouette1[" << i << "] = " << silhouette1[i] << endl;
     
     // Compute objective function
     double obj_f1 = cluster1.objective_f();
@@ -145,8 +143,6 @@ int main(int argc, char* argv[]) {
 
     // Compute silhouette
     std::vector<double> silhouette2 = cluster2_io.silhouette();
-    for (int i=0; i<(int)silhouette2.size(); i++) 
-        cout << "silhouette2[" << i << "] = " << silhouette2[i] << endl;
 
     // Compute objective function
     double obj_f2 = cluster2_io.objective_f();
@@ -246,6 +242,47 @@ int main(int argc, char* argv[]) {
 
     outputFileStream << "Value of Objective Function: " << obj_f3 << endl;
 
+
+
+    // Print some stuff
+    int classes = 4;
+    int n = 10;
+
+    cout << "\n\n\n********************************************************************" << endl;
+    cout << "Original space clustering" << endl;
+
+    for (int i=0; i<classes; i++) {
+        cout << "\n\ncentroid[" << i << "]" << endl;
+        cluster1.centroid[i].print();
+        cout << "\nContains" << endl;
+
+        for (int j=0; (j<n) && (j<cluster1.cluster[i].size()); j++)
+            cluster1.cluster[i][j].print();
+    }
+
+    cout << "\n\n\n********************************************************************" << endl;
+    cout << "New space clustering" << endl;
+
+    for (int i=0; i<classes; i++) {
+        cout << "\n\ncentroid[" << i << "]" << endl;
+        cluster2_io.centroid[i].print();
+        cout << "\nContains" << endl;
+
+        for (int j=0; (j<n) && (j<cluster2_io.cluster[i].size()); j++)
+            cluster2_io.cluster[i][j].print();
+    }
+
+    cout << "\n\n\n********************************************************************" << endl;
+    cout << "Neural Net clustering" << endl;
+
+    for (int i=0; i<classes; i++) {
+        cout << "\n\ncentroid[" << i << "]" << endl;
+        cluster3.centroid[i].print();
+        cout << "\nContains" << endl;
+
+        for (int j=0; (j<n) && (j<cluster3.cluster[i].size()); j++)
+            cluster3.cluster[i][j].print();
+    }
 
 
     // Close files

@@ -241,7 +241,7 @@ void test_classes_as_clusters(void) {
     string s("../src/test/input/parse_cluster_input_2.txt");
     auto cluster = classes_as_clusters(s, images);
 
-    cluster.display();
+    // cluster.display();
 
     TEST_CHECK( cluster.cluster[0][0] == images[0] );
     TEST_CHECK( cluster.cluster[0][1] == images[1] );
@@ -254,10 +254,79 @@ void test_classes_as_clusters(void) {
 
 
 
+void test_silhouette(void) { 
+
+    int numrows = 1;
+    int numcols = 1;
+
+    vector<PIXEL_T> pixels1{ 10 };
+    vector<PIXEL_T> pixels2{ 11 };
+    vector<PIXEL_T> pixels3{ 8 };
+    vector<PIXEL_T> pixels4{ 1 };
+    vector<PIXEL_T> pixels5{ 2 };
+    vector<PIXEL_T> pixels6{ 100 };
+    vector<PIXEL_T> pixels7{ 103 };
+
+    Image img1(numrows, numcols, 1);
+    Image img2(numrows, numcols, 1);    
+    Image img3(numrows, numcols, 1);
+    Image img4(numrows, numcols, 1);
+    Image img5(numrows, numcols, 1);
+    Image img6(numrows, numcols, 1);
+    Image img7(numrows, numcols, 1);
+
+    img1.id = 1;
+    img2.id = 2;
+    img3.id = 3;
+    img4.id = 4;
+    img5.id = 5;
+    img6.id = 6;
+    img7.id = 7;
+
+    img1.pixels = pixels1;
+    img2.pixels = pixels2;
+    img3.pixels = pixels3;
+    img4.pixels = pixels4;
+    img5.pixels = pixels5;
+    img6.pixels = pixels6;
+    img7.pixels = pixels7;
+
+    vector<Image> images;
+    images.push_back(img1);
+    images.push_back(img2);
+    images.push_back(img3);
+    images.push_back(img4);
+    images.push_back(img5);
+    images.push_back(img6);
+    images.push_back(img7);
+
+
+    string s("../src/test/input/silhouette_1.txt");
+    auto cluster = classes_as_clusters(s, images);
+
+    cluster.display();
+
+    auto ret = cluster.silhouette();
+
+    for (int i=0; i<(int)ret.size(); i++) 
+        cout << "silhouette1[" << i << "] = " << ret[i] << endl;
+
+    double epsilon = 0.00000001;
+    TEST_CHECK( abs(ret[0] - 0.8285306025244106) < epsilon);
+    TEST_CHECK( abs(ret[1] - 0.9385451505016722) < epsilon);
+    TEST_CHECK( abs(ret[2] - 0.9836617026884554) < epsilon);
+    TEST_CHECK( abs(ret[3] - 0.9042865019933554) < epsilon);
+
+
+}
+
+
+
 TEST_LIST = {
     {"objective_f", test_objective_f},
     {"replace", test_replace},
     {"parse_clustering", test_parse_clustering},
     {"classes_as_clusters", test_classes_as_clusters},
+    {"silhouette", test_silhouette},
     {NULL, NULL}
 };

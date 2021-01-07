@@ -186,12 +186,12 @@ Cluster::Cluster(int k1, std::string m1,
     }
 
 
-
+/*
     // Print all centroids
     std::cout << "\n\n\t\t\tPrinting all centroids after initialization++!" << std::endl;
     for (auto it = centroid.begin(); it != centroid.end(); ++it)
         it->print();
-
+*/
 
 
     // Find minimum distance between two centroids, gonna use it for LSH & Hypercube
@@ -202,7 +202,7 @@ Cluster::Cluster(int k1, std::string m1,
             if (dist(centroid[i], centroid[j]) < initRange)
                 initRange = dist(centroid[i], centroid[j]);
 
-    std::cout << "initRange = " << initRange << std::endl;
+    // std::cout << "initRange = " << initRange << std::endl;
 
 
 
@@ -368,7 +368,7 @@ Cluster::Cluster(int k1, std::string m1,
             }
 
 
-
+/*
             //
             // Print imgAssignedToCluster
             //
@@ -381,7 +381,7 @@ Cluster::Cluster(int k1, std::string m1,
                 }
                 std::cout << std::endl;
             }
-
+*/
 
             
             // Check number of unassigned images
@@ -391,7 +391,7 @@ Cluster::Cluster(int k1, std::string m1,
                 if (imgAssignedToCluster[i].size() == 0)
                     unassignedImages++;
 
-            std::cout << "unassigned images = " << unassignedImages << ", limit = " << limitUnassigned(input.size()) << std::endl;
+            // std::cout << "unassigned images = " << unassignedImages << ", limit = " << limitUnassigned(input.size()) << std::endl;
 
             if (unassignedImages < limitUnassigned(input.size())) 
                 break;
@@ -400,7 +400,7 @@ Cluster::Cluster(int k1, std::string m1,
             initRange *= 2;
             if (initRange <= 0)
                 break;
-            std::cout << "new initRange = " << initRange << std::endl;
+            // std::cout << "new initRange = " << initRange << std::endl;
 
         }   // else if (m == METHOD_LSH) or (m == METHOD_HYPERCUBE) 
 
@@ -441,7 +441,7 @@ Cluster::Cluster(int k1, std::string m1,
     } while (1);
 
 
-
+/*
     //
     // Print stuff
     //
@@ -469,7 +469,7 @@ Cluster::Cluster(int k1, std::string m1,
     }
 
     // std::cout << "\n\nTotal images = " << total_images << std::endl;
-
+*/
 } 
 
 
