@@ -32,9 +32,9 @@ int binSea(std::vector<unsigned int> A, int x, unsigned int pos1, unsigned int p
 
 int newCentroidPos(std::vector<Image> input, std::vector<Image> centroid, int t);
 
-Image median(std::vector<Image> images);
-
 */
+
+Image median(std::vector<Image> images);
 
 std::vector<std::vector<int> > parse_clustering(string& filename);
 
@@ -71,5 +71,7 @@ struct Cluster {
     void replace(std::vector<Image> new_image);
 
 };
+
+Cluster classes_as_clusters(string& filename, vector<Image> images);
 
 #endif // CLUSTER_HPP

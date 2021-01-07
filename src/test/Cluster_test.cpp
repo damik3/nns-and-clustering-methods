@@ -196,9 +196,68 @@ void test_parse_clustering(void) {
 
 
 
+void test_classes_as_clusters(void) {
+
+    int numrows = 1;
+    int numcols = 2;
+
+    vector<PIXEL_T> pixels1{ 100, 150 };
+    vector<PIXEL_T> pixels2{ 130, 130 };
+    vector<PIXEL_T> pixels3{ 110, 180 };
+    vector<PIXEL_T> pixels4{ 100, 130 };
+    vector<PIXEL_T> pixels5{ 100, 140 };
+    vector<PIXEL_T> pixels6{ 100, 150 };
+
+    Image img1(numrows, numcols, 1);
+    Image img2(numrows, numcols, 1);    
+    Image img3(numrows, numcols, 1);
+    Image img4(numrows, numcols, 1);
+    Image img5(numrows, numcols, 1);
+    Image img6(numrows, numcols, 1);
+
+    img1.id = 1;
+    img2.id = 2;
+    img3.id = 3;
+    img4.id = 4;
+    img5.id = 5;
+    img6.id = 6;
+
+    img1.pixels = pixels1;
+    img2.pixels = pixels2;
+    img3.pixels = pixels3;
+    img4.pixels = pixels4;
+    img5.pixels = pixels5;
+    img6.pixels = pixels6;
+
+    vector<Image> images;
+    images.push_back(img1);
+    images.push_back(img2);
+    images.push_back(img3);
+    images.push_back(img4);
+    images.push_back(img5);
+    images.push_back(img6);
+
+
+    string s("../src/test/input/parse_cluster_input_2.txt");
+    auto cluster = classes_as_clusters(s, images);
+
+    cluster.display();
+
+    TEST_CHECK( cluster.cluster[0][0] == images[0] );
+    TEST_CHECK( cluster.cluster[0][1] == images[1] );
+    TEST_CHECK( cluster.cluster[0][2] == images[5] );
+    TEST_CHECK( cluster.cluster[1][0] == images[3] );
+    TEST_CHECK( cluster.cluster[1][1] == images[4] );
+    TEST_CHECK( cluster.cluster[2][0] == images[2] );
+
+}
+
+
+
 TEST_LIST = {
     {"objective_f", test_objective_f},
     {"replace", test_replace},
     {"parse_clustering", test_parse_clustering},
+    {"classes_as_clusters", test_classes_as_clusters},
     {NULL, NULL}
 };

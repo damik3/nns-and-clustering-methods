@@ -1,0 +1,3 @@
+CLUSTER-1 { size: 3, 1, 2, 6, }
+CLUSTER-2 { size: 2, 4, 5, }
+CLUSTER-3 { size: 1, 3, }

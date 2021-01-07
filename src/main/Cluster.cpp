@@ -692,3 +692,29 @@ std::vector<std::vector<int> > parse_clustering(string& filename) {
 
     return ret;
 }
+
+
+
+Cluster classes_as_clusters(string& filename, vector<Image> images) {
+    auto cluster_imgn = parse_clustering(filename);
+
+    int num_clusters = cluster_imgn.size();
+
+    vector<vector<Image> > clusters(num_clusters);
+
+    for (int i=0; i<num_clusters; i++)
+        for (int j = 0; j < cluster_imgn[i].size(); j++)
+            clusters[i].push_back(images[cluster_imgn[i][j] - 1]);
+
+    vector<Image> centroid;
+    for (int k=0; k< num_clusters; k++) 
+        centroid.push_back( median(clusters[k]) );
+
+    Cluster cluster;
+    cluster.k = num_clusters;
+    cluster.m = METHOD_CLASSIC;
+    cluster.centroid = centroid;
+    cluster.cluster = clusters;
+
+    return cluster;
+}

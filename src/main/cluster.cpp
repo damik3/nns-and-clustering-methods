@@ -33,7 +33,7 @@ int main(int argc, char* argv[]) {
     string input_original;
     int dupto;
     string input_new;
-    string nn_cluster;
+    string nn_cluster_fn;
     string conf_file;
     string output_file;
 
@@ -41,14 +41,14 @@ int main(int argc, char* argv[]) {
     input_original,
     dupto,
     input_new,
-    nn_cluster,
+    nn_cluster_fn,
     conf_file,
     output_file);
 
     cout << input_original << endl;
     cout << dupto << endl;
     cout << input_new << endl;
-    cout << nn_cluster << endl;
+    cout << nn_cluster_fn << endl;
     cout << conf_file << endl;
     cout << output_file << endl;
 
@@ -153,6 +153,14 @@ int main(int argc, char* argv[]) {
 
 
 
+    // Create clusters for neural network clustering
+    Cluster cluster3 = classes_as_clusters(nn_cluster_fn, io_images);
+
+    vector<double> silhouette3 = cluster3.silhouette();
+    double obj_f3 = cluster3.objective_f();
+
+
+
     //
     // Print to ouput file
     //
@@ -224,6 +232,21 @@ int main(int argc, char* argv[]) {
     outputFileStream << silhouette1[number_of_clusters] << "]" << endl;
 
     outputFileStream << "Value of Objective Function: " << obj_f1 << endl;
+
+
+
+    outputFileStream << "\nCLASSES AS CLUSTERS" << endl;
+
+    outputFileStream << "Silhouette: [";
+
+    for (int i=0; i<cluster3.k; i++) 
+        outputFileStream << silhouette3[i] << ", ";
+
+    outputFileStream << silhouette3[cluster3.k] << "]" << endl;
+
+    outputFileStream << "Value of Objective Function: " << obj_f3 << endl;
+
+
 
     // Close files
     outputFileStream.close();
