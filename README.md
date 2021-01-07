@@ -23,7 +23,7 @@ From the project root directory:
   * `python ./python/search` with extra optional command line arguements
     * -dupto <int>: number of images to read from train set
     * -qupto <int>: number of images to read from query set
-  * `./build/cluster`
+  * `./build/cluster` with extra optional command line arguements
     * -dupto <int>: number of images to read from input file both in original and new space
 
 ## Comments and Observations
@@ -98,24 +98,84 @@ For this question we only tested the architectures that produced good results.
 #### Question C
 For the tests we ran we observed that the EMD metric was better than the Manhattan one for EMD configured with 49 clusters (with cluster size 4x4) and it was worse than the Manhattan metric configured with 16 clusters (with cluster size 7x7) clusters. More specifically:
  * For 1000 input images and 10 queries
-     * Manhattan
-       * Average correct search results: 0.7
-       * Average time per query: 0.156
+     * Manhattan 
+        ```
+       * Average correct search results: 0.700
+       * Average time per query:         0.156
+        ```
      * EMD with 49 clusters 
-       * Average correct search results: 0.82
-       * Average time per query: 21.960
+        ```
+       * Average correct search results: 0.820
+       * Average time per query:        21.960
+        ```
      * EMD with 16 clusters 
-       * Average correct search results: 0.59
-       * Average time per query: 3.153
+        ```
+       * Average correct search results: 0.590
+       * Average time per query:         3.153
+        ```
  * For 500 input images and 20 queries
      * Manhattan
+        ```
        * Average correct search results: 0.675
-       * Average time per query: 0.082
+       * Average time per query:         0.082
+        ```
      * EMD with 49 clusters
-       * Average correct search results: 0.78
-       * Average time per query: 11.107
+        ```
+       * Average correct search results: 0.780
+       * Average time per query:        11.107
+        ```
      * EMD with 16 clusters
-       * Average correct search results: 0.58
-       * Average time per query: 1.370
+        ```
+       * Average correct search results: 0.580
+       * Average time per query:         1.370
+        ```
 
 #### Question D
+We experimented with `n = number of clusters`, ranging from 10 to 18, and we noticed best behaviour for Original Space Clustering (OSC) and New Space Clustering (NSC) for `n = 14`. Both OSC and NSC had a similar Silhouette but the NSC run about 10 times faster. The only reason NSC is faster is the big change in dimensions. OSC has 784-item vectors when NSC has 10-item vectors. 
+
+For the Neaural Network Clustering (NNC), while the Silhouette metric was almost never better than OSC and NSC, when we evaluated the clustering by viewing the images in each cluster ourselves, the NNC was obviously better than both the other two. This led us to the thought that the Silhouette function compared with the Manhattan metric is not a very effective evaluation function for image classification.
+
+Also note, that our `cluster` executable, after it completes the clustering and writing to the output file, it also prints for each clustering (OSC, NSC and NNC), the 4 first centroids with their first 10 images accordingly. That is so you can see for yourselves how good each method classifies the images.
+
+Below we present some of our experiments in further detail:
+
+  * For number of clusters = 18
+  ```
+    * Original space Silhouette: 		    0.182337
+    * Original space objective function: 	1.65468e+07
+    * New space Silhouette: 			    0.176998
+    * New space objective function:  	    1.72742e+07
+  ```
+  * For number of clusters = 16
+  ```
+    * Original space Silhouette: 		    0.190027
+    * Original space objective function: 	1.67176e+07
+    * New space Silhouette: 			    0.163812
+    * New space objective function:  	    1.77052e+07
+  ```
+  * For number of clusters = 14
+  ```
+    * Original space Silhouette: 		    0.183848
+    * Original space objective function: 	1.71709e+07
+    * New space Silhouette: 			    0.188102
+    * New space objective function:  	    1.84484e+07
+  ```
+  * For number of clusters = 12
+  ```
+    * Original space Silhouette: 		    0.175698
+    * Original space objective function: 	1.80835e+07
+    * New space Silhouette: 			    0.149321
+    * New space objective function:  	    1.83353e+07
+  ```
+  * For number of clusters = 10
+  ```
+    * Original space Silhouette: 		    0.175865
+    * Original space objective function: 	1.84824e+07
+    * New space Silhouette: 			    1.84824e+07
+    * New space objective function:  	    1.91691e+07
+  ```
+  * For Neural Net Clustering with high accuracy and number of clusters = 10
+  ```
+    * Silhouette: 		    0.1406
+    * Objective function: 	1.95733e+07
+  ```
