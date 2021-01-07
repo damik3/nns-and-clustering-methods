@@ -96,7 +96,7 @@ For this question we only tested the architectures that produced good results.
     ```
 
 #### Question C
-For the tests we ran we observed that the EMD metric was better than the Manhattan one for EMD configured with 49 clusters (with cluster size 4x4) and it was worse than the Manhattan metric configured with 16 clusters (with cluster size 7x7) clusters. More specifically:
+For the tests we ran we observed that the EMD metric was better than the Manhattan one for EMD configured with 49 clusters (with cluster size 4x4) and it was worse than the Manhattan metric for EMD configured with 16 clusters (with cluster size 7x7). More specifically:
  * For 1000 input images and 10 queries
      * Manhattan 
         ```
