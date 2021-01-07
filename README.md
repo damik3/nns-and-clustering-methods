@@ -141,41 +141,41 @@ Below we present some of our experiments in further detail:
 
   * For number of clusters = 18
   ```
-    * Original space Silhouette: 		    0.182337
+    * Original space Silhouette: 		      0.182337
     * Original space objective function: 	1.65468e+07
-    * New space Silhouette: 			    0.176998
+    * New space Silhouette: 			        0.176998
     * New space objective function:  	    1.72742e+07
   ```
   * For number of clusters = 16
   ```
-    * Original space Silhouette: 		    0.190027
+    * Original space Silhouette: 		      0.190027
     * Original space objective function: 	1.67176e+07
-    * New space Silhouette: 			    0.163812
+    * New space Silhouette: 			        0.163812
     * New space objective function:  	    1.77052e+07
   ```
   * For number of clusters = 14
   ```
-    * Original space Silhouette: 		    0.183848
+    * Original space Silhouette: 		      0.183848
     * Original space objective function: 	1.71709e+07
-    * New space Silhouette: 			    0.188102
+    * New space Silhouette: 			        0.188102
     * New space objective function:  	    1.84484e+07
   ```
   * For number of clusters = 12
   ```
-    * Original space Silhouette: 		    0.175698
+    * Original space Silhouette: 		      0.175698
     * Original space objective function: 	1.80835e+07
-    * New space Silhouette: 			    0.149321
+    * New space Silhouette: 			        0.149321
     * New space objective function:  	    1.83353e+07
   ```
   * For number of clusters = 10
   ```
-    * Original space Silhouette: 		    0.175865
+    * Original space Silhouette: 		      0.175865
     * Original space objective function: 	1.84824e+07
-    * New space Silhouette: 			    1.84824e+07
+    * New space Silhouette: 			        1.84824e+07
     * New space objective function:  	    1.91691e+07
   ```
   * For Neural Net Clustering with high accuracy and number of clusters = 10
   ```
-    * Silhouette: 		    0.1406
+    * Silhouette: 		      0.1406
     * Objective function: 	1.95733e+07
   ```
