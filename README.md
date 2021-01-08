@@ -29,8 +29,11 @@ From the project root directory:
 ## Comments and Observations
 
 #### Question A
-For this question we tested the following NN architectures and got these results:
-  * Arch 1: Good behaviour, avoided overfitting, recreated original images with success.
+For this question we tested are architectures based on avoiding overfitting and small loss percentage both on train and test set. Our executable, after training, it also prints the first 10 original images and their respective autoencoded ones, so we can check with our own eyes if it indeed does a good job at encoding.
+
+We tested the following NN architectures and got these results:
+
+  * Arch 1 : Good behaviour, avoided overfitting, recreated original images with success (input size: 2500, queries 100) . 
     ```
     * convolution layers: 2
     * size of filter 1: 32
@@ -39,34 +42,7 @@ For this question we tested the following NN architectures and got these results
     * number of epochs: 20
     * batch size: 64  
     ```
-  * Arch 2: Bad behaviour, could not recreate original images.
-    ```
-    * convolution layers: 2
-    * size of filter 1: 64
-    * size of filter 2: 96
-    * number of convolutional filters per layer: 1
-    * number of epochs: 20
-    * batch size: 125
-    ```  
-  * Arch 3: OK behaviour. avoided overfitting, recreated original images with partial success.
-    ```
-    * convolution layers: 2
-    * size of filter 1: 32
-    * size of filter 2: 32
-    * number of convolutional filters per layer: 1
-    * number of epochs: 20
-    * batch size: 32
-    ```
-  * Arch 4: Bad behaviour, could not recreate original images.
-    ```
-    * convolution layers: 2
-    * size of filter 1: 64
-    * size of filter 2: 96
-    * number of convolutional filters per layer: 1
-    * number of epochs: 20
-    * batch size: 50
-    ```
-  * Arch 5: Good behaviour, avoided overfitting, recreated original images with success (input size:2500, queries: 100).
+  * Arch 2: Good behaviour, avoided overfitting, recreated original images with success (input size:2500, queries: 100). Corresponding files a_query_new_1, q_train_new_1.
     ```
     * convolution layers: 2
     * size of filter 1: 40
@@ -75,28 +51,59 @@ For this question we tested the following NN architectures and got these results
     * number of epochs: 25
     * batch size: 64
     ```
+  * Arch 3: Not good behaviour, avoided overfitting but was not able to succesfully recreate autoencoded images (input size:2500, queries: 100). The only thing we changed from Arch2 was the batch size.
+    ```
+    * convolution layers: 2
+    * size of filter 1: 40
+    * size of filter 2: 80
+    * number of convolutional filters per layer: 1
+    * number of epochs: 25
+    * batch size: 100
+    ```
+  * Arch 4: Good behaviour, avoided overfitting, recreated original images with success (input size:2500, queries: 100). Corresponding files a_query_new_2, q_train_new_2.
+    ```
+    * convolution layers: 2
+    * size of filter 1: 60
+    * size of filter 2: 60
+    * number of convolutional filters per layer: 1
+    * number of epochs: 20
+    * batch size: 64
+    ```
+  
 
 #### Question B
-For this question we only tested the architectures that produced good results.
+For this question we only tested the architectures from question 1 that produced good results.  In general, the NeuralNet method did better than LSH. They did about the same time, but NeuralNet had an overall better approximation factor.
+
+Our `search` executable for this question, prints each query, and for each query the Brute Force, LSH and NeuralNet closet neighbor if you want to check the results with your own eyes.
+
   * For Arch 1, LSH and NeuralNet were about the same. We got:
     ```
-    tReduced: 598.057
-    tLSH: 499.478
-    tTrue: 8031.74
-    Approximation Factor LSH: 1.5759
-    Approximation Factor Reduced: 1.55799
+     * tReduced: 598.057
+     * tLSH: 499.478
+     * tTrue: 8031.74
+     * Approximation Factor LSH: 1.5759
+     * Approximation Factor Reduced: 1.55799
     ```
-  * For Arch 5, NeuralNet did better thatn LSH. We got:
+  * For Arch 2, NeuralNet did better than LSH. We got:
     ```
-    tReduced: 364.818
-    tLSH: 367.164
-    tTrue: 3720.04
-    Approximation Factor LSH: 1.46096
-    Approximation Factor Reduced: 1.27103
+     * tReduced: 364.818
+     * tLSH: 367.164
+     * tTrue: 3720.04
+     * Approximation Factor LSH: 1.46096
+     * Approximation Factor Reduced: 1.27103
+    ```
+  * For Arch 4, NeuraNet did better than LSH. We got:
+    ```
+     * tReduced: 741.992
+     * tLSH: 794.935
+     * tTrue: 8672.91
+     * Approximation Factor LSH: 1.42435
+     * Approximation Factor Reduced: 1.2999
     ```
 
 #### Question C
 For the tests we ran we observed that the EMD metric was better than the Manhattan one for EMD configured with 49 clusters (with cluster size 4x4) and it was worse than the Manhattan metric configured with 16 clusters (with cluster size 7x7) clusters. More specifically:
+
  * For 1000 input images and 10 queries
      * Manhattan 
         ```
