@@ -38,6 +38,8 @@ From the project root directory:
   with extra optional command line arguements
   * -dupto <int>: number of images to read from input file both in original and new space
 
+  Note that in the configuration file `cluster.conf` only the fist parameter `number_of_clusters` is actually used by the execeutable. The others are leftovers from hw1.
+
 ## Comments and Observations
 
 #### Question A
@@ -102,7 +104,7 @@ Our `search` executable for this question, prints each query, and for each query
      * tReduced:  598.057
      * tLSH:      499.478
      * tTrue:    8031.740
-     * Approximation Factor LSH:      1.5759
+     * Approximation Factor LSH:      1.57590
      * Approximation Factor Reduced:  1.55799
     ```
   * For Arch 2, NeuralNet did better than LSH. We got:
@@ -119,7 +121,7 @@ Our `search` executable for this question, prints each query, and for each query
      * tLSH:      794.935
      * tTrue:    8672.910
      * Approximation Factor LSH:      1.42435
-     * Approximation Factor Reduced:  1.2999
+     * Approximation Factor Reduced:  1.29990
     ```
   * For Arch 5, LSH did better than LSH. We got:
     ```
@@ -171,6 +173,8 @@ We experimented with `n = number of clusters`, ranging from 10 to 18, and we not
 For the Neaural Network Clustering (NNC), while the Silhouette metric was almost never better than OSC and NSC, when we evaluated the clustering by viewing the images in each cluster ourselves, the NNC was obviously better than both the other two. This led us to the thought that the Silhouette function combined with the Manhattan metric is not a very effective evaluation function for image classification.
 
 Also note, that our `cluster` executable, after it completes the clustering and writing to the output file, it also prints for each clustering (OSC, NSC and NNC), the 4 first centroids with their first 10 images accordingly. That is so you can see for yourselves how good each method classifies the images.
+
+
 
 Below we present some of our experiments in further detail:
 
