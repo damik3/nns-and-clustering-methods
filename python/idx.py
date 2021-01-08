@@ -59,7 +59,7 @@ def getIdxLabels(f, num_labels, label_size):
         ret[i] = f.read(label_size)
         ret[i] = int.from_bytes(ret[i], "big")
 
-    return 
+    return ret
     
 
 
