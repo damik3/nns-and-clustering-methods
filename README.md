@@ -19,6 +19,8 @@ From the project root directory:
    with extra optional command line arguements
   * -dupto <int>: number of images to read from train set
   * -qupto <int>: number of images to read from query set
+
+---
   ```
   ./build/search –d <input file original space> -i <input file new space> –q <query file original space> -s <query file new space> –k <int> -L <int> -ο <output file>
   ``` 
@@ -26,12 +28,18 @@ From the project root directory:
   * -dupto <int>: number of images to read from train set
   * -qupto <int>: number of images to read from query set
   * -w <int>: w parameter for LSH
+  
+---
   ```
   python ./python/search –d  <input  file  original  space>  –q  <query  file  original  space>  -l1  <labels of input dataset> -l2 <labels of query dataset> -ο <output file> -EMD
   ```
   with extra optional command line arguements
   * -dupto <int>: number of images to read from train set
   * -qupto <int>: number of images to read from query set
+  
+  Note that for this executable to run succesfully, the OR-Tools module for Python must be installed. This can be done with `python -m pip install --upgrade --user ortools`.
+
+---
   ```
   ./build/cluster –d <input file original space> -i <input file new space>  -n <classes from NN as clusters file> –c <configuration file> -o <output file>
   ```
@@ -40,6 +48,7 @@ From the project root directory:
 
   Note that in the configuration file `cluster.conf` only the fist parameter `number_of_clusters` is actually used by the execeutable. The others are leftovers from hw1.
 
+---
 ## Comments and Observations
 
 #### Question A
