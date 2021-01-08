@@ -35,70 +35,87 @@ We tested the following NN architectures and got these results:
 
   * Arch 1 : Good behaviour, avoided overfitting, recreated original images with success (input size: 2500, queries 100) . 
     ```
-    * convolution layers: 2
-    * size of filter 1: 32
-    * size of filter 2: 64
-    * number of convolutional filters per layer: 1
-    * number of epochs: 20
-    * batch size: 64  
+    * convolution layers:                          2
+    * size of filter 1:                           32
+    * size of filter 2:                           64
+    * number of convolutional filters per layer:   1
+    * number of epochs:                           20
+    * batch size:                                 64  
     ```
   * Arch 2: Good behaviour, avoided overfitting, recreated original images with success (input size:2500, queries: 100). Corresponding files a_query_new_1, q_train_new_1.
     ```
-    * convolution layers: 2
-    * size of filter 1: 40
-    * size of filter 2: 80
-    * number of convolutional filters per layer: 1
-    * number of epochs: 25
-    * batch size: 64
+    * convolution layers:                          2
+    * size of filter 1:                           40
+    * size of filter 2:                           80
+    * number of convolutional filters per layer:   1
+    * number of epochs:                           25
+    * batch size:                                 64
     ```
   * Arch 3: Not good behaviour, avoided overfitting but was not able to succesfully recreate autoencoded images (input size:2500, queries: 100). The only thing we changed from Arch2 was the batch size.
     ```
-    * convolution layers: 2
-    * size of filter 1: 40
-    * size of filter 2: 80
-    * number of convolutional filters per layer: 1
-    * number of epochs: 25
-    * batch size: 100
+    * convolution layers:                          2
+    * size of filter 1:                           40
+    * size of filter 2:                           80
+    * number of convolutional filters per layer:   1
+    * number of epochs:                           25
+    * batch size:                                100
     ```
   * Arch 4: Good behaviour, avoided overfitting, recreated original images with success (input size:2500, queries: 100). Corresponding files a_query_new_2, q_train_new_2.
     ```
-    * convolution layers: 2
-    * size of filter 1: 60
-    * size of filter 2: 60
-    * number of convolutional filters per layer: 1
-    * number of epochs: 20
-    * batch size: 64
+    * convolution layers:                          2
+    * size of filter 1:                           60
+    * size of filter 2:                           60
+    * number of convolutional filters per layer:   1
+    * number of epochs:                           20
+    * batch size:                                 64
+    ```
+    * Arch 5: Good behaviour, avoided overfitting, recreated original images with success (input size:2500, queries: 100). Corresponding files a_query_new_4, q_train_new_4.
+    ```
+    * convolution layers:                          2
+    * size of filter 1:                           28
+    * size of filter 2:                           84
+    * number of convolutional filters per layer:   1
+    * number of epochs:                           25
+    * batch size:                                 64
     ```
   
 
 #### Question B
-For this question we only tested the architectures from question 1 that produced good results.  In general, the NeuralNet method did better than LSH. They did about the same time, but NeuralNet had an overall better approximation factor.
+For this question we only tested the architectures from question 1 that produced good results. Most of the times (but not always), the NeuralNet method did better than LSH. They did about the same time, but NeuralNet had an overall better approximation factor. It obviously depends on the Architecture and hyperparameters of question 1, but we showed that it can perform better than LSH when tuned appropriately.
 
 Our `search` executable for this question, prints each query, and for each query the Brute Force, LSH and NeuralNet closet neighbor if you want to check the results with your own eyes.
 
   * For Arch 1, LSH and NeuralNet were about the same. We got:
     ```
-     * tReduced: 598.057
-     * tLSH: 499.478
-     * tTrue: 8031.74
-     * Approximation Factor LSH: 1.5759
-     * Approximation Factor Reduced: 1.55799
+     * tReduced:  598.057
+     * tLSH:      499.478
+     * tTrue:    8031.740
+     * Approximation Factor LSH:      1.5759
+     * Approximation Factor Reduced:  1.55799
     ```
   * For Arch 2, NeuralNet did better than LSH. We got:
     ```
-     * tReduced: 364.818
-     * tLSH: 367.164
-     * tTrue: 3720.04
-     * Approximation Factor LSH: 1.46096
-     * Approximation Factor Reduced: 1.27103
+     * tReduced:  364.818
+     * tLSH:      367.164
+     * tTrue:    3720.040
+     * Approximation Factor LSH:      1.46096
+     * Approximation Factor Reduced:  1.27103
     ```
   * For Arch 4, NeuraNet did better than LSH. We got:
     ```
-     * tReduced: 741.992
-     * tLSH: 794.935
-     * tTrue: 8672.91
-     * Approximation Factor LSH: 1.42435
-     * Approximation Factor Reduced: 1.2999
+     * tReduced:  741.992
+     * tLSH:      794.935
+     * tTrue:    8672.910
+     * Approximation Factor LSH:      1.42435
+     * Approximation Factor Reduced:  1.2999
+    ```
+  * For Arch 5, LSH did better than LSH. We got:
+    ```
+     * tReduced:  370.492
+     * tLSH:      507.651
+     * tTrue:    4745.400
+     * Approximation Factor LSH:      1.44375
+     * Approximation Factor Reduced:  1.72814
     ```
 
 #### Question C
@@ -147,41 +164,41 @@ Below we present some of our experiments in further detail:
 
   * For number of clusters = 18
   ```
-    * Original space Silhouette: 		      0.182337
-    * Original space objective function: 	1.65468e+07
-    * New space Silhouette: 			        0.176998
-    * New space objective function:  	    1.72742e+07
+    * Original space Silhouette:          0.182337
+    * Original space objective function:  1.65468e+07
+    * New space Silhouette:               0.176998
+    * New space objective function:       1.72742e+07
   ```
   * For number of clusters = 16
   ```
-    * Original space Silhouette: 		      0.190027
-    * Original space objective function: 	1.67176e+07
-    * New space Silhouette: 			        0.163812
-    * New space objective function:  	    1.77052e+07
+    * Original space Silhouette:          0.190027
+    * Original space objective function:  1.67176e+07
+    * New space Silhouette:               0.163812
+    * New space objective function:       1.77052e+07
   ```
   * For number of clusters = 14
   ```
-    * Original space Silhouette: 		      0.183848
-    * Original space objective function: 	1.71709e+07
-    * New space Silhouette: 			        0.188102
-    * New space objective function:  	    1.84484e+07
+    * Original space Silhouette:          0.183848
+    * Original space objective function:  1.71709e+07
+    * New space Silhouette:               0.188102
+    * New space objective function:       1.84484e+07
   ```
   * For number of clusters = 12
   ```
-    * Original space Silhouette: 		      0.175698
-    * Original space objective function: 	1.80835e+07
-    * New space Silhouette: 			        0.149321
-    * New space objective function:  	    1.83353e+07
+    * Original space Silhouette:          0.175698
+    * Original space objective function:  1.80835e+07
+    * New space Silhouette:               0.149321
+    * New space objective function:       1.83353e+07
   ```
   * For number of clusters = 10
   ```
-    * Original space Silhouette: 		      0.175865
-    * Original space objective function: 	1.84824e+07
-    * New space Silhouette: 			        1.84824e+07
-    * New space objective function:  	    1.91691e+07
+    * Original space Silhouette:          0.175865
+    * Original space objective function:  1.84824e+07
+    * New space Silhouette:               1.84824e+07
+    * New space objective function:       1.91691e+07
   ```
   * For Neural Net Clustering with high accuracy and number of clusters = 10
   ```
-    * Silhouette: 		      0.1406
-    * Objective function: 	1.95733e+07
+    * Silhouette:          0.1406
+    * Objective function:  1.95733e+07
   ```
