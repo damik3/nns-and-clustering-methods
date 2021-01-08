@@ -15,7 +15,7 @@ AUTOENCODER_OUT_COORD_SIZE = 2
 
 
 def usage():
-   print('autoencoder.py  –d <dataset>  -dupto <optional int>  -q <query file>  -qupto <optional int>  -od <output_dataset_file> -oq <output_query_file>')
+   print('reduce.py  –d <dataset>  -dupto <optional int>  -q <query file>  -qupto <optional int>  -od <output_dataset_file> -oq <output_query_file>')
 
 
 
