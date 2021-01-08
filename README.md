@@ -13,18 +13,30 @@ make
 
 ## Run
 From the project root directory:
-  * `python ./python/reduce.py` with extra optional command line arguements
-    * -dupto <int>: number of images to read from train set
-    * -qupto <int>: number of images to read from query set
-  * `./build/search` with extra optional command line arguements
-    * -dupto <int>: number of images to read from train set
-    * -qupto <int>: number of images to read from query set
-    * -w <int>: w parameter for LSH
-  * `python ./python/search` with extra optional command line arguements
-    * -dupto <int>: number of images to read from train set
-    * -qupto <int>: number of images to read from query set
-  * `./build/cluster` with extra optional command line arguements
-    * -dupto <int>: number of images to read from input file both in original and new space
+  ```
+  python ./python/reduce.py  –d  <dataset>  -q  <queryset>  -od  <output_dataset_file>  -oq  <output_query_file>
+  ```
+   with extra optional command line arguements
+  * -dupto <int>: number of images to read from train set
+  * -qupto <int>: number of images to read from query set
+  ```
+  ./build/search –d <input file original space> -i <input file new space> –q <query file original space> -s <query file new space> –k <int> -L <int> -ο <output file>
+  ``` 
+  with extra optional command line arguements
+  * -dupto <int>: number of images to read from train set
+  * -qupto <int>: number of images to read from query set
+  * -w <int>: w parameter for LSH
+  ```
+  python ./python/search –d  <input  file  original  space>  –q  <query  file  original  space>  -l1  <labels of input dataset> -l2 <labels of query dataset> -ο <output file> -EMD
+  ```
+  with extra optional command line arguements
+  * -dupto <int>: number of images to read from train set
+  * -qupto <int>: number of images to read from query set
+  ```
+  ./build/cluster –d <input file original space> -i <input file new space>  -n <classes from NN as clusters file> –c <configuration file> -o <output file>
+  ```
+  with extra optional command line arguements
+  * -dupto <int>: number of images to read from input file both in original and new space
 
 ## Comments and Observations
 
