@@ -6,11 +6,11 @@ Implementation of various methods for nearest neighbor search and clustering of 
 
 - **Question A:** For this question, we implemented an autoencoder neural network which we tested for different architectures.
 
-- **Question B:** For this question, we took the latent vector representation of a query (basically a 10-d vector from question A) for all images (query and train set) and we used brute force to find its nearest neighbor in that 10-d vector space. We compared it with brute force in the original 28x28 vector space and with the Locality Sensitive Hashing (LSH) method we had implemented in a previous homework of the same course. The Manhattan Distance was used for all comparisons above.
+- **Question B:** For this question, we took the latent vector representation (basically a 10-d vector from question A) for all images (query and train set) and we used brute force to find for each query, the nearest neighbor in that 10-d vector space. We compared it with brute force in the original 28x28-d vector space and with the Locality Sensitive Hashing (LSH) method we had implemented in a previous homework of the same course. The Manhattan Distance was used for all comparisons above.
 
-- **Question C:** For this question, we implemented the Earth Mover's Distance (EMD) as a different way of measuring the dustance between two vectors (or two images), which basically reduces to solving a Linear Programming problem. For each query, we computed its 10 nearest neighbors using EMD and brute force and compared the results.
+- **Question C:** For this question, we implemented the Earth Mover's Distance (EMD) as a different way of measuring the distance between two vectors (or two images) which basically reduces to solving a Linear Programming problem. For each query, we computed its 10 nearest neighbors using EMD and brute force and compared the results bewteen the two.
 
-- **Question D:** For this question, we did three different clusterings of the train set images. Clustering #1 was done by using images in the original 28x28 vector space. Clustering #2 was done by using the images' latent vector representation as in Question B that is, in the 10-d vector space. Clustering #3 comes of a convolional nerual network for classification we had implemented again in a previous homework of the same course. Again we did tests and compared the results
+- **Question D:** For this question, we did three different clusterings of the train set images. Clustering #1 was done by using images in the original 28x28-d vector space. Clustering #2 was done by using the images' latent vector representation as in Question B that is, in the 10-d vector space. Clustering #3 comes of a convolional nerual network for classification we had implemented again in a previous homework of the same course. Again we did tests and compared the results
 
 ## Results and Observations
 
