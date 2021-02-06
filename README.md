@@ -1,55 +1,18 @@
 # k23-hw3-fall-2020
 
-## Authors
- * Sideris Nikolaos, sdi1600153
- * Vargiamis Michail, sdi1300018
+## General description
 
-## Build 
-```
-mkdir build && cd build 
-cmake .. 
-make
-```
+Implementation of various methods for nearest neighbor search and clustering of images for the MNIST database of handwritten digits. Part of an undergrad course homework.
 
-## Run
-From the project root directory:
-  ```
-  python ./python/reduce.py  –d  <dataset>  -q  <queryset>  -od  <output_dataset_file>  -oq  <output_query_file>
-  ```
-   with extra optional command line arguements
-  * -dupto <int>: number of images to read from train set
-  * -qupto <int>: number of images to read from query set
+- **Question A:** For this question, we implemented an autoencoder neural network which we tested for different architectures.
 
----
-  ```
-  ./build/search –d <input file original space> -i <input file new space> –q <query file original space> -s <query file new space> –k <int> -L <int> -ο <output file>
-  ``` 
-  with extra optional command line arguements
-  * -dupto <int>: number of images to read from train set
-  * -qupto <int>: number of images to read from query set
-  * -w <int>: w parameter for LSH
-  
----
-  ```
-  python ./python/search –d  <input  file  original  space>  –q  <query  file  original  space>  -l1  <labels of input dataset> -l2 <labels of query dataset> -ο <output file> -EMD
-  ```
-  with extra optional command line arguements
-  * -dupto <int>: number of images to read from train set
-  * -qupto <int>: number of images to read from query set
-  
-  Note that for this executable to run succesfully, the OR-Tools module for Python must be installed. This can be done with `python -m pip install --upgrade --user ortools`.
+- **Question B:** For this question, we took the latent vector representation of a query (basically a 10-d vector from question A) for all images (query and train set) and we used brute force to find its nearest neighbor in that 10-d vector space. We compared it with brute force in the original 28x28 vector space and with the Locality Sensitive Hashing (LSH) method we had implemented in a previous homework of the same course. The Manhattan Distance was used for all comparisons above.
 
----
-  ```
-  ./build/cluster –d <input file original space> -i <input file new space>  -n <classes from NN as clusters file> –c <configuration file> -o <output file>
-  ```
-  with extra optional command line arguements
-  * -dupto <int>: number of images to read from input file both in original and new space
+- **Question C:** For this question, we implemented the Earth Mover's Distance (EMD) as a different way of measuring the dustance between two vectors (or two images), which basically reduces to solving a Linear Programming problem. For each query, we computed its 10 nearest neighbors using EMD and brute force and compared the results.
 
-  Note that in the configuration file `cluster.conf` only the fist parameter `number_of_clusters` is actually used by the execeutable. The others are leftovers from hw1.
+- **Question D:** For this question, we did three different clusterings of the train set images. Clustering #1 was done by using images in the original 28x28 vector space. Clustering #2 was done by using the images' latent vector representation as in Question B that is, in the 10-d vector space. Clustering #3 comes of a convolional nerual network for classification we had implemented again in a previous homework of the same course. Again we did tests and compared the results
 
----
-## Comments and Observations
+## Results and Observations
 
 #### Question A
 For this question we tested are architectures based on avoiding overfitting and small loss percentage both on train and test set. Our executable, after training, it also prints the first 10 original images and their respective autoencoded ones, so we can check with our own eyes if it indeed does a good job at encoding.
@@ -227,3 +190,53 @@ Below we present some of our experiments in further detail:
     * Silhouette:          0.1406
     * Objective function:  1.95733e+07
   ```
+
+## Build 
+```
+mkdir build && cd build 
+cmake .. 
+make
+```
+
+## Run
+From the project root directory:
+  ```
+  python ./python/reduce.py  –d  <dataset>  -q  <queryset>  -od  <output_dataset_file>  -oq  <output_query_file>
+  ```
+   with extra optional command line arguements
+  * -dupto <int>: number of images to read from train set
+  * -qupto <int>: number of images to read from query set
+
+---
+  ```
+  ./build/search –d <input file original space> -i <input file new space> –q <query file original space> -s <query file new space> –k <int> -L <int> -ο <output file>
+  ``` 
+  with extra optional command line arguements
+  * -dupto <int>: number of images to read from train set
+  * -qupto <int>: number of images to read from query set
+  * -w <int>: w parameter for LSH
+  
+---
+  ```
+  python ./python/search –d  <input  file  original  space>  –q  <query  file  original  space>  -l1  <labels of input dataset> -l2 <labels of query dataset> -ο <output file> -EMD
+  ```
+  with extra optional command line arguements
+  * -dupto <int>: number of images to read from train set
+  * -qupto <int>: number of images to read from query set
+  
+  Note that for this executable to run succesfully, the OR-Tools module for Python must be installed. This can be done with `python -m pip install --upgrade --user ortools`.
+
+---
+  ```
+  ./build/cluster –d <input file original space> -i <input file new space>  -n <classes from NN as clusters file> –c <configuration file> -o <output file>
+  ```
+  with extra optional command line arguements
+  * -dupto <int>: number of images to read from input file both in original and new space
+
+  Note that in the configuration file `cluster.conf` only the fist parameter `number_of_clusters` is actually used by the execeutable. The others are leftovers from hw1.
+
+---
+
+## Authors
+ * Sideris Nikolaos
+ * Vargiamis Michalis
