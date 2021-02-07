@@ -26,19 +26,16 @@ All following commands are given from the project root directory.
   ```
   python python/reduce.py -d ./datasets/train-images-idx3-ubyte -dupto 2500 -q ./datasets/t10k-images-idx3-ubyte -qupto 100 -od ./train-reduced-2500 -oq ./query-reduced-100
   ```
----
-
+  
 - **Question B**
   ```
   ./build/search -d ./datasets/train-images-idx3-ubyte -i ./train-reduced-2500 -dupto 2500 -q ./datasets/t10k-images-idx3-ubyte -s ./query-reduced-100  -qupto 100 -k 2 -L 8 -w 40 -o question2.out
   ``` 
----
 
 - **Question C**
   ```
   python ./python/search.py -d ./datasets/train-images-idx3-ubyte -dupto 1000 -q ./datasets/t10k-images-idx3-ubyte -qupto 10 -l1 ./datasets/train-labels-idx1-ubyte -l2 ./datasets/t10k-labels-idx1-ubyte -o question3.out -EMD
   ```
----
 
 - **Question D**
   ```
@@ -52,8 +49,6 @@ All following commands are given from the project root directory.
   ```
   
   Note that in the configuration file `cluster.conf` only the fist parameter `number_of_clusters` is actually used by the execeutable. The others are leftovers from hw1.
-
----
 
 ## Results and Observations
 
