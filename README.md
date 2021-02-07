@@ -42,7 +42,7 @@ All following commands are given from the project root directory.
 
 - **Question D**
   ```
-  python3.8 python/classification.py -d ./datasets/train-images-idx3-ubyte -d1 ./datasets/train-labels-idx1-ubyte -t ./datasets/t10k-images-idx3-ubyte -t1 ./datasets/t10k-labels-idx1-ubyte -model ./python/weights-2-32-64-1-30-32.h5 -o classification1.out -dupto 1000 -tupto 100
+  python python/classification.py -d ./datasets/train-images-idx3-ubyte -d1 ./datasets/train-labels-idx1-ubyte -t ./datasets/t10k-images-idx3-ubyte -t1 ./datasets/t10k-labels-idx1-ubyte -model ./python/weights-2-32-64-1-30-32.h5 -o classification1.out -dupto 1000 -tupto 100
   ```
   
   and then
