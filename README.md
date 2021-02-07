@@ -12,6 +12,49 @@ Implementation of various methods for nearest neighbor search and clustering of 
 
 - **Question D:** For this question, we did three different clusterings of the train set images. Clustering #1 was done by using images in the original 28x28-d vector space. Clustering #2 was done by using the images' latent vector representation as in Question B that is, in the 10-d vector space. Clustering #3 comes of a convolional nerual network for classification we had implemented again in a previous homework of the same course. Again we did tests and compared the results
 
+## Build 
+```
+mkdir build && cd build 
+cmake .. 
+make
+```
+
+## Sample Run
+All following commands are given from the project root directory. 
+
+- **Question A**
+  ```
+  python python/reduce.py -d ./datasets/train-images-idx3-ubyte -dupto 2500 -q ./datasets/t10k-images-idx3-ubyte -qupto 100 -od ./train-reduced-2500 -oq ./query-reduced-100
+  ```
+---
+
+- **Question B**
+  ```
+  ./build/search -d ./datasets/train-images-idx3-ubyte -i ./train-reduced-2500 -dupto 2500 -q ./datasets/t10k-images-idx3-ubyte -s ./query-reduced-100  -qupto 100 -k 2 -L 8 -w 40 -o question2.out
+  ``` 
+---
+
+- **Question C**
+  ```
+  python ./python/search.py -d ./datasets/train-images-idx3-ubyte -dupto 1000 -q ./datasets/t10k-images-idx3-ubyte -qupto 10 -l1 ./datasets/train-labels-idx1-ubyte -l2 ./datasets/t10k-labels-idx1-ubyte -o question3.out -EMD
+  ```
+---
+
+- **Question D**
+  ```
+  python3.8 python/classification.py -d ./datasets/train-images-idx3-ubyte -d1 ./datasets/train-labels-idx1-ubyte -t ./datasets/t10k-images-idx3-ubyte -t1 ./datasets/t10k-labels-idx1-ubyte -model ./python/weights-2-32-64-1-30-32.h5 -o classification1.out -dupto 1000 -tupto 100
+  ```
+  
+  and then
+  
+  ```
+  ./build/cluster -d ./datasets/train-images-idx3-ubyte -i train-reduced-2500 -dupto 1000 -n classification1.out -c cluster.conf -o question4.out
+  ```
+  
+  Note that in the configuration file `cluster.conf` only the fist parameter `number_of_clusters` is actually used by the execeutable. The others are leftovers from hw1.
+
+---
+
 ## Results and Observations
 
 #### Question A
@@ -190,53 +233,3 @@ Below we present some of our experiments in further detail:
     * Silhouette:          0.1406
     * Objective function:  1.95733e+07
   ```
-
-## Build 
-```
-mkdir build && cd build 
-cmake .. 
-make
-```
-
-## Run
-From the project root directory:
-  ```
-  python ./python/reduce.py  –d  <dataset>  -q  <queryset>  -od  <output_dataset_file>  -oq  <output_query_file>
-  ```
-   with extra optional command line arguements
-  * -dupto <int>: number of images to read from train set
-  * -qupto <int>: number of images to read from query set
-
----
-  ```
-  ./build/search –d <input file original space> -i <input file new space> –q <query file original space> -s <query file new space> –k <int> -L <int> -ο <output file>
-  ``` 
-  with extra optional command line arguements
-  * -dupto <int>: number of images to read from train set
-  * -qupto <int>: number of images to read from query set
-  * -w <int>: w parameter for LSH
-  
----
-  ```
-  python ./python/search –d  <input  file  original  space>  –q  <query  file  original  space>  -l1  <labels of input dataset> -l2 <labels of query dataset> -ο <output file> -EMD
-  ```
-  with extra optional command line arguements
-  * -dupto <int>: number of images to read from train set
-  * -qupto <int>: number of images to read from query set
-  
-  Note that for this executable to run succesfully, the OR-Tools module for Python must be installed. This can be done with `python -m pip install --upgrade --user ortools`.
-
----
-  ```
-  ./build/cluster –d <input file original space> -i <input file new space>  -n <classes from NN as clusters file> –c <configuration file> -o <output file>
-  ```
-  with extra optional command line arguements
-  * -dupto <int>: number of images to read from input file both in original and new space
-
-  Note that in the configuration file `cluster.conf` only the fist parameter `number_of_clusters` is actually used by the execeutable. The others are leftovers from hw1.
-
----
-
-## Authors
- * Sideris Nikolaos
- * Vargiamis Michalis
